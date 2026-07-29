@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2] - 2026-07-29
+
+### Added
+- Full-screen countdown overlay shown on every page a timed-out user visits (hooked
+  into the existing `core.page_header`-driven `check_timeout_status`, which already
+  excluded admins/moderators/anonymous users). The page content is already loaded
+  underneath; the overlay hides it for a fixed 5 seconds before disappearing - a
+  read-access "slowdown", not an additional restriction on top of the existing
+  post/reply/PM/quote/edit blocks.
+- New `TIMEOUT_COUNTDOWN_SECONDS` template var (fixed at 5, not yet ACP-configurable)
+  and `TIMEOUT_COUNTDOWN_MESSAGE` language string (EN, IT) explaining the read-only
+  status, both rendered in `styles/prosilver/template/event/overall_header_content_before.html`
+  alongside the existing timeout warning banner.
+- Larger, more prominent typography (2026-07-29 follow-up): 1.8em message text,
+  6em countdown number, replacing an initial smaller layout with a `%d`-substituted
+  message - simplified to a fixed message plus a separately updated number, since
+  the message text no longer changes during the countdown.
+
 ## [1.0.1] - 2026-07-29
 
 **Rollback point.** This tag consolidates all the [0.0.2]-[0.0.14] work below

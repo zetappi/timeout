@@ -535,6 +535,7 @@ class main_listener implements EventSubscriberInterface
                 'S_USER_IN_TIMEOUT' => true,
                 'TIMEOUT_WARNING_HTML' => $warning_html,
                 'TIMEOUT_END_DATE' => $timeout_end_date,
+                'TIMEOUT_COUNTDOWN_SECONDS' => 5, // ritardo di lettura per utenti in timeout, su ogni pagina
             ]);
         }
     }

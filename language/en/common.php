@@ -101,6 +101,7 @@ $lang = array_merge($lang, [
 	'TIMEOUT_USER_CANNOT_EDIT'     => 'You cannot edit messages while you are in timeout.',
 	'TIMEOUT_USER_CANNOT_PM'       => 'You cannot send private messages while you are in timeout.',
 	'TIMEOUT_USER_RESTRICTED'      => '<strong>Warning:</strong> Your account is currently in timeout. You cannot post new messages, reply, edit or send private messages until the timeout expires.',
+	'TIMEOUT_COUNTDOWN_MESSAGE'    => 'You are currently in timeout. You cannot interact with the forum, you have read-only access.',
 	'TIMEOUT_LOG_ADDED' => '<strong>Timeout added</strong><br />» User: %1$s<br />» Reason: %2$s<br />» Expiry: %3$s',
 	'TIMEOUT_LOG_ENDED' => '<strong>Timeout ended</strong><br />» User: %2$s',
 	'TIMEOUT_LOG_PURGED' => '<strong>Timeout deleted</strong><br />» User: %2$s',
