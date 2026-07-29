@@ -20,7 +20,7 @@
 
 <h2>{L_MCP_TIMEOUT_MAIN}</h2>
 
-<form id="mcp_timeout" method="post" action="{U_ACTION}">
+<form id="mcp_timeout" method="post" action="{U_ACTION}" onsubmit="return marcozp_timeout_confirm(this);">
 
 <div class="panel">
 	<div class="inner">
@@ -97,5 +97,20 @@
 </fieldset>
 
 </form>
+
+<script>
+function marcozp_timeout_confirm(form)
+{
+	var username = form.username.value;
+	var durationSelect = form.suggested_duration;
+	var durationLabel = durationSelect.options[durationSelect.selectedIndex].text;
+
+	var message = '{L_TIMEOUT_CONFIRM_APPLY}'
+		.replace('%1$s', username)
+		.replace('%2$s', durationLabel);
+
+	return confirm(message);
+}
+</script>
 
 <!-- INCLUDE mcp_footer.html -->

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.8] - 2026-07-29
+
+### Added
+- Confirmation prompt (JS `confirm()`) before submitting the timeout form, summarizing
+  the target username and the selected duration (e.g. "Apply a timeout of 2 hours to
+  user "Janacek"?"), to prevent accidental submissions
+- New language string `TIMEOUT_CONFIRM_APPLY` (EN, IT) with `%1$s` (username) and
+  `%2$s` (duration label) placeholders substituted client-side from the form fields
+
 ## [0.0.7] - 2026-07-29
 
 ### Fixed

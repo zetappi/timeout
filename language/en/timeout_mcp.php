@@ -55,6 +55,7 @@ $lang = array_merge($lang, [
 	'TIMEOUT_NOTIFY_USER_EXPLAIN'   => 'Send a notification to the user informing them of the timeout.',
 	'TIMEOUT_USER'                  => 'Username',
 	'TIMEOUT_USER_EXPLAIN'          => 'Enter the username of the user to timeout.',
+	'TIMEOUT_CONFIRM_APPLY'         => 'Apply a timeout of %2$s to user "%1$s"?',
 	'USER_HISTORY'                  => 'User History',
 	'BAN_HISTORY'                   => 'Ban Count',
 	'WARNING_HISTORY'               => 'Warning Count',
