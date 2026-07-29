@@ -1,299 +1,81 @@
-{% include 'mcp_header.html' %}
+<!-- INCLUDE mcp_header.html -->
 
-<h2>{{ lang('MCP_TIMEOUT_TITLE') }}</h2>
+<script src="{ROOT_PATH}ext/marcozp/timeout/styles/prosilver/template/js/timeout_slider.js"></script>
 
-<form id="mcp_timeout" method="post" action="{{ U_ACTION }}">
-    <div class="panel">
-        <div class="inner">-----
+<h2>{L_MCP_TIMEOUT_MAIN}</h2>
 
-        {% if S_ERROR %}
-            <div class="error">
-                <p>{{ ERROR_MSG }}</p>
-            </div>
-        {% endif %}
+<form id="mcp_timeout" method="post" action="{U_ACTION}">
 
-        <fieldset>
-            <dl>
-                <dt><label for="username">{{ lang('TIMEOUT_USER') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_USER_EXPLAIN') }}</span></dt>
-                <dd><input class="inputbox" type="text" name="username" id="username" size="20" value="{{ USERNAME }}" {% if S_TIMEOUT_USERNAME_READONLY %}readonly="readonly"{% endif %} /></dd>
-            </dl>
-            <dl>
-                <dt><label>{{ lang('TIMEOUT_DURATION') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_DURATION_EXPLAIN') }}</span></dt>
-                <dd>
-                    <select name="timeout_duration" id="timeout_duration" class="inputbox autowidth">
-                        <option value="60"{% if SELECTED_DURATION == 60 %} selected="selected"{% endif %}>1 {{ lang('HOUR') }}</option>
-                        <option value="120"{% if SELECTED_DURATION == 120 or not SELECTED_DURATION %} selected="selected"{% endif %}>2 {{ lang('HOURS') }}</option>
-                        <option value="240"{% if SELECTED_DURATION == 240 %} selected="selected"{% endif %}>4 {{ lang('HOURS') }}</option>
-                        <option value="480"{% if SELECTED_DURATION == 480 %} selected="selected"{% endif %}>8 {{ lang('HOURS') }}</option>
-                        <option value="1440"{% if SELECTED_DURATION == 1440 %} selected="selected"{% endif %}>12 {{ lang('HOURS') }}</option>
-                        <option value="{{ MAX_DURATION }}"{% if SELECTED_DURATION == MAX_DURATION %} selected="selected"{% endif %}>{{ lang('MAX_DURATION_ACP') }}</option>
-                    </select>
-                    <input type="hidden" name="suggested_duration" id="suggested_duration_hidden" value="">
-                    <p class="help-block">{{ lang('RISK_INDEX') }}: <strong>{{ NEW_RISK_INDEX }}%</strong></p>
-                    <p class="help-block">{{ lang('SUGGESTED_DURATION') }}: <strong><span id="suggested_duration" style="color: red;">--</span></strong> <span style="font-size: 0.9em;" id="duration_explanation">(Questo è il tempo effettivo di timeout che verrà applicato / This is the effective timeout duration that will be applied)</span></p>
-                </dd>
-            </dl>
-            {% if S_SHOW_TIMEOUT_INFO %}
-            <dl>
-                <dt>{{ lang('TIMEOUT_HISTORY') }}:</dt>
-                <dd>{{ TIMEOUT_COUNT }}</dd>
-            </dl>
-            
-            <dl>
-                <dt>{{ lang('BAN_HISTORY') }}:</dt>
-                <dd>{{ BAN_COUNT }}</dd>
-            </dl>
-            
-            <dl>
-                <dt>{{ lang('WARNING_HISTORY') }}:</dt>
-                <dd>{{ WARNING_COUNT }}</dd>
-            </dl>
-            
-            {% if S_USER_IS_IN_TIMEOUT %}
-            <dl>
-                <dt>{{ lang('CURRENT_TIMEOUT') }}:</dt>
-                <dd>{{ TIMEOUT_END_DATE }}</dd>
-            </dl>
-            {% endif %}
-            {% endif %}
-            <dl>
-                <dt><label for="timeout_reason">{{ lang('TIMEOUT_REASON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_REASON_EXPLAIN') }} ({{ lang('OPTIONAL') }})</span></dt>
-                <dd><select id="preset_reason" style="margin-bottom:6px;">
-    <option value="">-- Seleziona un motivo predefinito --</option>
-    <option value="Sei stato inserito in Timeout per OT reiterato">Sei stato inserito in Timeout per OT reiterato</option>
-    <option value="Sei  stato inserito in Timeout per decisione della Moderazione">Sei  stato inserito in Timeout per decisione della Moderazione</option>
-</select>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var preset = document.getElementById('preset_reason');
-    var textarea = document.getElementById('timeout_reason');
-    if (preset && textarea) {
-        preset.addEventListener('change', function() {
-            if (this.value) textarea.value = this.value;
-        });
-    }
-});
-</script>
-<textarea class="inputbox" name="timeout_reason" id="timeout_reason" rows="3" cols="30">{{ REASON }}</textarea></dd>
-            </dl>
-            <dl>
-                <dt><label for="notify_user">{{ lang('TIMEOUT_NOTIFY_USER') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_NOTIFY_USER_EXPLAIN') }}</span></dt>
-                <dd><label><input type="checkbox" class="radio" name="notify_user" id="notify_user" value="1" checked="checked" /> {{ lang('YES') }}</label></dd>
-            </dl>
-        </fieldset>
+<div class="panel">
+	<div class="inner">
 
-        </div>
-    </div>
+	<fieldset>
+		<dl>
+			<dt><label for="username">{L_TIMEOUT_USER}{L_COLON}</label><br /><span>{L_TIMEOUT_USER_EXPLAIN}</span></dt>
+			<dd><input type="text" class="inputbox" name="username" id="username" value="{USERNAME}"<!-- IF S_TIMEOUT_USERNAME_READONLY --> readonly="readonly"<!-- ENDIF --> /></dd>
+			<input type="hidden" name="user_id" value="{USER_ID}" />
+			<!-- IF S_IS_POST -->
+			<input type="hidden" name="post_id" value="{POST_ID}" />
+			<input type="hidden" name="topic_id" value="{TOPIC_ID}" />
+			<!-- ENDIF -->
+		</dl>
+		<!-- IF USER_ID -->
+		<fieldset>
+			<legend>{L_USER_HISTORY}</legend>
+			<dl>
+				<dt><strong>{L_BAN_HISTORY}:</strong></dt>
+				<dd>{BAN_COUNT}</dd>
+			</dl>
+			<dl>
+				<dt><strong>{L_WARNING_HISTORY}:</strong></dt>
+				<dd>{WARNING_COUNT}</dd>
+			</dl>
+		</fieldset>
+		<!-- ENDIF -->
+		<dl>
+			<dt><label for="suggested_duration">{L_TIMEOUT_DURATION}{L_COLON}</label><br /><span>{L_TIMEOUT_DURATION_EXPLAIN}</span></dt>
+			<dd>
+				<div style="margin-bottom: 10px;">
+					<input type="range"
+						   id="suggested_duration"
+						   name="suggested_duration"
+						   min="30"
+						   max="43200"
+						   value="{DURATION}"
+						   step="15"
+						   style="width: 100%; cursor: pointer;" />
+				</div>
+				<div style="display: flex; gap: 15px; flex-wrap: wrap;">
+					<div style="flex: 1; min-width: 150px;">
+						<strong>{L_DURATION_MINUTES}:</strong> <span id="duration_minutes">{DURATION}</span>
+					</div>
+					<div style="flex: 1; min-width: 150px;">
+						<strong>{L_DURATION_READABLE}:</strong> <span id="duration_readable">1 ora</span>
+					</div>
+				</div>
+				<div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+					{L_DURATION_RANGE_HELP}
+				</div>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="timeout_reason">{L_TIMEOUT_REASON}{L_COLON}</label><br /><span>{L_TIMEOUT_REASON_EXPLAIN}</span></dt>
+			<dd><textarea name="timeout_reason" id="timeout_reason" class="inputbox" rows="3" cols="40"></textarea></dd>
+		</dl>
+		<dl>
+			<dt><label for="notify_user">{L_TIMEOUT_NOTIFY_USER}{L_COLON}</label><br /><span>{L_TIMEOUT_NOTIFY_USER_EXPLAIN}</span></dt>
+			<dd><input type="checkbox" class="inputbox" name="notify_user" id="notify_user" checked="checked" /></dd>
+		</dl>
+	</fieldset>
 
-    <div class="panel">
-        <div class="inner">
-            <h3>{{ lang('USER_HISTORY') }}</h3>
-            <div class="karma-summary-wrap">
-    <div class="karma-stats-row">
-        <span title="Ban totali"><span style="color: #e53935; font-size: 1.2em;">&#9940;</span> <strong>{{ BAN_COUNT }}</strong> {{ lang('BAN_HISTORY') }}</span>
-        <span title="Warning totali"><span style="color: #ee6e05; font-size: 1.2em;">&#9888;</span> <strong>{{ WARNING_COUNT }}</strong> {{ lang('WARNING_HISTORY') }}</span>
-        <span title="Timeout totali"><span style="color: #1976d2; font-size: 1.2em;">&#9200;</span> <strong>{{ TIMEOUT_COUNT }}</strong> {{ lang('TIMEOUT_TOTAL') }}</span>
-    </div>
-    <div class="karma-factor-label"><strong>{{ lang('RISK_INDEX') }}:</strong> <span style="display: inline-block; width: 50px;">{{ NEW_RISK_INDEX }}%</span></div>
-    <div class="vumeter-wrap"><div class="vumeter" id="vumeter"></div></div>
-    <div class="karma-explain">in base ai ban, warning e timeout registrati negli ultimi 24 mesi e altri fattori di comportamento.</div>
+	</div>
 </div>
-            <style>
-                .karma-summary-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    margin: 0 auto 20px auto;
-    padding: 18px 0 8px 0;
-    max-width: 520px;
-}
-.karma-stats-row {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-bottom: 8px;
-    font-size: 1.1em;
-}
-.karma-factor-label {
-    font-size: 1.08em;
-    margin-bottom: 3px;
-}
-.vumeter-wrap {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-bottom: 4px;
-}
-.vumeter {
-    display: flex;
-    align-items: center;
-    height: 14px;
-    gap: 1px;
-    border: 1.5px solid #ccc;
-    border-radius: 7px;
-    background: #444;
-    box-sizing: border-box;
-    padding: 2px 5px;
-    min-width: 145px;
-    max-width: 320px;
-    margin: 0 auto;
-}
-.karma-explain {
-    margin: 6px 0 10px 0;
-    font-size: 0.98em;
-    color: #666;
-    max-width: 420px;
-}
 
-                .vumeter {
-                    display: flex;
-                    align-items: center;
-                    height: 14px;
-                    gap: 1px;
-                    margin: 4px 0 8px 10px;
-                }
-                .vumeter-segment {
-                    display: inline-block;
-                    width: 2.5px;
-                    height: 100%;
-                    border-radius: 2px;
-                    transition: opacity 0.3s;
-                    background: #ddd;
-                }
-                .vumeter-blink {
-                    animation: vumeter-blink 1s steps(1) infinite;
-                }
-                @keyframes vumeter-blink {
-                    0%, 60% {
-                        opacity: 1;
-                    }
-                    61%, 100% {
-                        opacity: 0.2;
-                    }
-                }
-            </style>
-            <script>
-// Generazione vumeter a segmenti
-(function() {
-    var risk = parseInt('{{ NEW_RISK_INDEX }}') || 0;
-    var vumeter = document.getElementById('vumeter');
-    if (!vumeter) return;
-    // Mappatura colori per range
-    function getColor(idx) {
-        if (idx < 10) return '#4caf50';        // 0-20 verde
-        if (idx < 18) return '#ffeb3b';        // 21-36 giallo
-        if (idx < 29) return '#ff9800';        // 37-58 arancione
-        if (idx < 43) return '#f44336';        // 59-85 rosso
-        return '#d500f9';                      // 86-100 violetto acceso
-    }
-    var activeSegments = Math.round(risk / 2);
-    vumeter.innerHTML = '';
-    for (var i = 0; i < 50; i++) {
-        var seg = document.createElement('span');
-        seg.className = 'vumeter-segment';
-        var color = getColor(i);
-        seg.style.background = color;
-        seg.style.opacity = (i < activeSegments) ? 1 : 0.14;
-        // Se è l'ultimo led attivo, aggiungi la classe lampeggiante
-        if (i === activeSegments - 1 && activeSegments > 0) {
-            seg.classList.add('vumeter-blink');
-        }
-        vumeter.appendChild(seg);
-    }
-})();
-</script>
-        </div>
-    </div>
-    <style>
-        .vumeter-segment {
-            transition: opacity 0.3s;
-        }
-    </style>
+<fieldset class="submit-buttons">
+	<input type="submit" name="submit_timeout" value="{L_SUBMIT}" class="button1" />
+	{S_FORM_TOKEN}
+</fieldset>
 
-    {% if S_SHOW_HISTORY %}
-    <fieldset>
-        <legend>{{ lang('USER_HISTORY') }}</legend>
-        <dl>
-            <dt><strong>{{ lang('BAN_HISTORY') }}:</strong></dt>
-            <dd>{{ BAN_COUNT }}</dd>
-        </dl>
-        <dl>
-            <dt><strong>{{ lang('WARNING_HISTORY') }}:</strong></dt>
-            <dd>{{ WARNING_COUNT }}</dd>
-        </dl>
-    </fieldset>
-    {% endif %}
-
-    {% if TIMEOUT_USER_HISTORY_VISIBLE %}
-    <div class="panel">
-        <div class="inner">
-            <h3>{{ lang('USER_HISTORY') }}</h3>
-            <dl class="details">
-                <dt>{{ lang('BAN_HISTORY') }}:</dt>
-                <dd>{{ TIMEOUT_USER_BAN_COUNT }}</dd>
-                <dt>{{ lang('WARNING_HISTORY') }}:</dt>
-                <dd>{{ TIMEOUT_USER_WARNING_COUNT }}</dd>
-            </dl>
-        </div>
-    </div>
-    {% endif %}
-
-    <fieldset class="submit-buttons">
-        <input type="hidden" name="post_id" value="{{ POST_ID }}" />
-        <input type="hidden" name="user_id" value="{{ USER_ID }}" />
-        <input type="hidden" name="topic_id" value="{{ TOPIC_ID }}" />
-        {{ S_HIDDEN_FIELDS }}
-        <input type="submit" name="submit_timeout" value="{{ lang('TIMEOUT_SUBMIT') }}" class="button1" />
-        {{ S_FORM_TOKEN }}
-    </fieldset>
 </form>
 
-<script>
-    // JavaScript per aggiornare la durata suggerita in base alla selezione
-    document.addEventListener('DOMContentLoaded', function() {
-        var riskIndex = parseInt('{{ NEW_RISK_INDEX }}') || 0;
-        console.log('Valore di NEW_RISK_INDEX:', '{{ NEW_RISK_INDEX }}', 'Valore convertito:', riskIndex);
-        var select = document.getElementById('timeout_duration');
-        var suggestedDurationSpan = document.getElementById('suggested_duration');
-        var suggestedDurationHidden = document.getElementById('suggested_duration_hidden');
-        var durationExplanation = document.getElementById('duration_explanation');
-
-        function formatDuration(minutes) {
-            var hours = Math.floor(minutes / 60);
-            var remainingMinutes = minutes % 60;
-            var hourText = hours > 1 ? 'ore' : 'ora';
-            var minuteText = remainingMinutes > 1 ? 'minuti' : 'minuto';
-            var hourTextEn = hours > 1 ? 'hours' : 'hour';
-            var minuteTextEn = remainingMinutes > 1 ? 'minutes' : 'minute';
-            
-            if (hours > 0 && remainingMinutes > 0) {
-                return hours + ' ' + hourText + ' e ' + remainingMinutes + ' ' + minuteText + ' / ' + hours + ' ' + hourTextEn + ' and ' + remainingMinutes + ' ' + minuteTextEn;
-            } else if (hours > 0) {
-                return hours + ' ' + hourText + ' / ' + hours + ' ' + hourTextEn;
-            } else {
-                return remainingMinutes + ' ' + minuteText + ' / ' + remainingMinutes + ' ' + minuteTextEn;
-            }
-        }
-
-        select.addEventListener('change', function() {
-            var selectedDuration = parseInt(this.value) || parseInt('{{ MAX_DURATION }}') || 0;
-            var coefficient = 1 + ((riskIndex / 100) * 3);
-            var suggestedDuration = Math.round(selectedDuration * coefficient);
-            suggestedDurationSpan.textContent = suggestedDuration;
-            suggestedDurationHidden.value = suggestedDuration;
-            durationExplanation.textContent = '(Questo è il tempo effettivo di timeout che verrà applicato: ' + formatDuration(suggestedDuration) + ') / (This is the effective timeout duration that will be applied: ' + formatDuration(suggestedDuration) + ')';
-        });
-        
-        // Calcolo iniziale
-        var initialDuration = parseInt(select.value) || parseInt('{{ MAX_DURATION }}') || 0;
-        var initialCoefficient = 1 + ((riskIndex / 100) * 3);
-        var initialSuggestedDuration = Math.round(initialDuration * initialCoefficient);
-        suggestedDurationSpan.textContent = initialSuggestedDuration;
-        suggestedDurationHidden.value = initialSuggestedDuration;
-        durationExplanation.textContent = '(Questo è il tempo effettivo di timeout che verrà applicato: ' + formatDuration(initialSuggestedDuration) + ') / (This is the effective timeout duration that will be applied: ' + formatDuration(initialSuggestedDuration) + ')';
-    });
-</script>
-
-{% include 'mcp_footer.html' %}
+<!-- INCLUDE mcp_footer.html -->
