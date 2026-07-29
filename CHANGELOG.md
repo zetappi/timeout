@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.4] - 2026-07-29
+
+### Fixed
+- Fixed root cause of "you must be logged in to moderate this forum" error on MCP timeout pages
+- `module_auth` in database must use a recognized prefixed token (`acl_XXX`, `aclf_XXX`, etc.)
+  per phpBB's `functions_module.php::module_auth()` token whitelist; a bare permission name
+  like `m_timeout` matches no valid token pattern and is silently stripped before evaluation,
+  always resolving to `false`
+- Added migration `fix_mcp_auth_prefix` to correct `module_auth` from `m_timeout` to `acl_m_timeout`
+  for all three MCP timeout modules (main, active, history)
+- Updated `mcp/main_info.php` to use `acl_m_timeout` for future clean installs
+
 ## [0.0.3] - 2026-07-29
 
 ### Changed
