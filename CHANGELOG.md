@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-07-29
+
+**Rollback point.** This tag consolidates all the [0.0.2]-[0.0.14] work below
+into the extension's official version line (matching `composer.json` and the
+`timeout_version` config value already in the database). Everything from the
+MCP permission/template fixes through the karma factor redefinition and the
+preset reason dropdown is included here as a single stable, verified state.
+Roll back to this tag/commit if a future change needs to be reverted.
+
 ## [0.0.14] - 2026-07-29
 
 ### Added

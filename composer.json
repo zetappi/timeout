@@ -3,8 +3,8 @@
     "type": "phpbb-extension",
     "description": "Allows moderators to temporarily restrict users in phpBB 3.3.x",
     "homepage": "https://github.com/marcozp/timeout",
-    "version": "v1.0.0",
-    "time": "2023-06-04",
+    "version": "v1.0.1",
+    "time": "2026-07-29",
     "license": "GPL-2.0-only",
     "authors": [
         {
