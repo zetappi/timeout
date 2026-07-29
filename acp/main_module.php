@@ -78,13 +78,20 @@ class main_module
                     if (!check_form_key('marcozp/timeout')) {
                         trigger_error('FORM_INVALID' . adm_back_link($this->u_action), E_USER_WARNING);
                     }
-                    
-                    // Aggiorna le configurazioni
+
+                    // Valida e aggiorna le configurazioni
+                    $max_duration = $request->variable('timeout_max_duration', 1440);
+
+                    // Validazione: max_duration deve essere tra 1 e 43200 minuti (30 giorni)
+                    if ($max_duration < 1 || $max_duration > 43200) {
+                        trigger_error($user->lang('TIMEOUT_MAX_DURATION_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+                    }
+
                     $config->set('timeout_enable', $request->variable('timeout_enable', 0));
                     $config->set('timeout_notify_user', $request->variable('timeout_notify_user', 0));
-                    $config->set('timeout_max_duration', $request->variable('timeout_max_duration', 1440)); // Default 24 ore
+                    $config->set('timeout_max_duration', $max_duration);
                     $config->set('timeout_log', $request->variable('timeout_log', 1));
-                    
+
                     trigger_error($user->lang('ACP_TIMEOUT_SETTINGS_SAVED') . adm_back_link($this->u_action));
                 }
                 

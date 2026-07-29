@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.2] - 2026-07-29
+
+### Changed
+- Increased maximum timeout duration limit from 7 days (10,080 minutes) to 30 days (43,200 minutes) in ACP settings
+- Updated HTML input field `max` attribute from 10080 to 43200
+- Added server-side validation to enforce timeout duration limits (1-43,200 minutes)
+- Updated language strings (EN, IT) to reflect new duration limits
+
+### Fixed
+- Prevented potential bypass of duration limits by adding stricter server-side validation
+
 ## [0.0.1] - 2026-07-29
 
 ### Added
