@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.13] - 2026-07-29
+
+### Changed
+- Redefined the Karma Factor formula from an abstract capped 0-100 "risk index"
+  weighted by arbitrary points (ban=5, warning=2, timeout=3 out of a fixed
+  max_score=100) to a direct, uncapped cumulative duration multiplier based on
+  the user's disciplinary history in the last 2 years (window already enforced
+  by `get_user_history_from_log`, unchanged):
+  - Each ban: +20%
+  - Each warning: +10%
+  - Each previous timeout: +10%
+  - Example: 2 bans + 1 warning + 1 timeout = 40+20+10+10 = 60% → a 1-hour
+    timeout becomes 1h36m
+- **The karma percentage is now automatically applied** to the duration selected
+  from the dropdown when applying a new timeout (`final = base × (1 + karma/100)`),
+  rather than being purely informational. The moderator sees both the base
+  duration and the resulting effective duration before confirming.
+- The base-duration ACP maximum check still validates the *selected* dropdown
+  value, not the karma-inflated final value: karma can legitimately push a
+  timeout's actual duration above `timeout_max_duration`, since it reflects the
+  user's own history rather than a configuration the moderator is choosing to
+  exceed.
+- Editing an already-active timeout's duration ("Modifica Timeout") remains an
+  exact, non-multiplied value by design - the moderator may need to set a
+  precise duration there without karma recalculating it again.
+- Renamed and simplified `event/main_listener.php`'s
+  `calculate_disciplinary_index()` (weights/max_score parameters, unused
+  override capability, debug `error_log()` call) into two small focused
+  methods: `calculate_karma_percent()` and `apply_karma_multiplier()`.
+- Removed dead debug code from `mcp/main_module.php`'s `main` mode: an
+  `error_log("Active template: ...")` call and an unreachable HTML `echo`
+  fallback block (both left over from earlier debugging, `$this->tpl_name`
+  is always set before this code runs).
+- Updated `RISK_INDEX_EXPLAIN` (EN, IT) to describe the actual formula instead
+  of the previous "0-100" description, which is no longer accurate now that
+  the percentage has no upper bound.
+- The risk meter bar's visual width is now clamped to 100% via a new
+  `RISK_METER_WIDTH` template var, while the displayed percentage number and
+  the real value used for the duration multiplier remain uncapped (a user
+  with 140% karma sees "140%" and a full bar, not a misleading "100%").
+
+### Added
+- `KARMA_EFFECTIVE_DURATION` (EN, IT) and inline JS in `mcp_timeout_main.html`
+  that recalculates and displays the effective duration live as the moderator
+  changes the dropdown selection, before submitting.
+
 ## [0.0.12] - 2026-07-29
 
 ### Fixed (pre-deploy verification pass)

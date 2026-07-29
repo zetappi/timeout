@@ -55,7 +55,7 @@
 				<dd>
 					<span style="display: inline-block; width: 50px;">{NEW_RISK_INDEX}%</span>
 					<div class="risk-meter">
-						<div class="risk-level" style="width: {NEW_RISK_INDEX}%; background-color: {RISK_COLOR};"></div>
+						<div class="risk-level" style="width: {RISK_METER_WIDTH}%; background-color: {RISK_COLOR};"></div>
 					</div>
 				</dd>
 			</dl>
@@ -64,7 +64,7 @@
 		<dl>
 			<dt><label for="suggested_duration">{L_TIMEOUT_DURATION}{L_COLON}</label><br /><span>{L_TIMEOUT_DURATION_EXPLAIN}</span></dt>
 			<dd>
-				<select name="suggested_duration" id="suggested_duration" class="inputbox">
+				<select name="suggested_duration" id="suggested_duration" class="inputbox" data-karma-percent="{KARMA_PERCENT}" onchange="marcozp_update_effective_duration();">
 					<option value="30"<!-- IF DURATION == 30 --> selected="selected"<!-- ENDIF -->>{L_DURATION_30MIN}</option>
 					<option value="60"<!-- IF DURATION == 60 --> selected="selected"<!-- ENDIF -->>{L_DURATION_1H}</option>
 					<option value="120"<!-- IF DURATION == 120 or not DURATION --> selected="selected"<!-- ENDIF -->>{L_DURATION_2H}</option>
@@ -76,6 +76,11 @@
 					<option value="20160"<!-- IF DURATION == 20160 --> selected="selected"<!-- ENDIF -->>{L_DURATION_14D}</option>
 					<option value="43200"<!-- IF DURATION == 43200 --> selected="selected"<!-- ENDIF -->>{L_DURATION_30D}</option>
 				</select>
+				<!-- IF KARMA_PERCENT -->
+				<div style="margin-top: 8px; font-size: 0.9em;">
+					{L_KARMA_EFFECTIVE_DURATION} <strong id="effective_duration_display"></strong>
+				</div>
+				<!-- ENDIF -->
 			</dd>
 		</dl>
 		<dl>
@@ -99,18 +104,51 @@
 </form>
 
 <script>
+function marcozp_format_minutes(totalMinutes)
+{
+	var days = Math.floor(totalMinutes / 1440);
+	var hours = Math.floor((totalMinutes % 1440) / 60);
+	var minutes = totalMinutes % 60;
+	var parts = [];
+
+	if (days > 0) parts.push(days + 'g');
+	if (hours > 0) parts.push(hours + 'h');
+	if (minutes > 0 || parts.length === 0) parts.push(minutes + 'min');
+
+	return parts.join(' ');
+}
+
+function marcozp_effective_duration_minutes(form)
+{
+	var durationSelect = form.suggested_duration;
+	var baseMinutes = parseInt(durationSelect.value, 10);
+	var karmaPercent = parseFloat(durationSelect.getAttribute('data-karma-percent')) || 0;
+
+	return Math.round(baseMinutes * (1 + (karmaPercent / 100)));
+}
+
+function marcozp_update_effective_duration()
+{
+	var form = document.getElementById('mcp_timeout');
+	var display = document.getElementById('effective_duration_display');
+	if (!form || !display) return;
+
+	display.textContent = marcozp_format_minutes(marcozp_effective_duration_minutes(form));
+}
+
 function marcozp_timeout_confirm(form)
 {
 	var username = form.username.value;
-	var durationSelect = form.suggested_duration;
-	var durationLabel = durationSelect.options[durationSelect.selectedIndex].text;
+	var effectiveLabel = marcozp_format_minutes(marcozp_effective_duration_minutes(form));
 
 	var message = '{L_TIMEOUT_CONFIRM_APPLY}'
 		.replace('%1$s', username)
-		.replace('%2$s', durationLabel);
+		.replace('%2$s', effectiveLabel);
 
 	return confirm(message);
 }
+
+document.addEventListener('DOMContentLoaded', marcozp_update_effective_duration);
 </script>
 
 <!-- INCLUDE mcp_footer.html -->

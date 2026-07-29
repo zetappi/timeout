@@ -106,14 +106,28 @@ class main_module
                     $result = $db->sql_query($sql);
                     $existing_timeout = $db->sql_fetchrow($result);
                     $db->sql_freeresult($result);
-                    
+
                     if ($existing_timeout) {
                         trigger_error($user->lang('TIMEOUT_USER_ALREADY_IN_TIMEOUT'));
                     }
-                    
+
+                    // Applica il fattore karma (storia disciplinare ultimi 2 anni)
+                    // alla durata scelta. Il controllo contro timeout_max_duration
+                    // sopra è già stato fatto sulla durata base selezionata dal
+                    // moderatore, non su quella finale: il karma può quindi
+                    // portare la durata effettiva oltre il massimo ACP.
+                    $listener = $phpbb_container->get('marcozp.timeout.event.listener');
+                    $history = $listener->get_user_history_from_log($user_id);
+                    $karma_percent = $listener->calculate_karma_percent(
+                        $history['ban_count'],
+                        $history['warning_count'],
+                        $history['timeout_count']
+                    );
+                    $final_duration_minutes = $listener->apply_karma_multiplier($duration_minutes, $karma_percent);
+
                     // Calcola il tempo di fine timeout
                     $start_time = time();
-                    $end_time = $start_time + ($duration_minutes * 60);
+                    $end_time = $start_time + ($final_duration_minutes * 60);
                     
                     // Inserisci il nuovo timeout
                     $sql_ary = [
@@ -164,8 +178,9 @@ class main_module
                     }
                     
                     // Aggiungi un log per l'azione di timeout
+                    $karma_note = $karma_percent > 0 ? " [Karma: +{$karma_percent}%, durata base {$duration_minutes} min -> {$final_duration_minutes} min]" : '';
                     $log = $phpbb_container->get('log');
-                    $log->add('mod', $user->data['user_id'], $user->ip, 'Timeout aggiunto a ' . $username . ' fino a ' . $user->format_date($end_time) . ($reason ? ' [Motivo: ' . $reason . ']' : ''), false, []);
+                    $log->add('mod', $user->data['user_id'], $user->ip, 'Timeout aggiunto a ' . $username . ' fino a ' . $user->format_date($end_time) . $karma_note . ($reason ? ' [Motivo: ' . $reason . ']' : ''), false, []);
                     
                     $message = $user->lang('TIMEOUT_ADDED_SUCCESS', $username);
                     $message .= '<br><br>' . $user->lang('RETURN_PAGE', '<a href="' . $this->u_action . '">', '</a>');
@@ -189,59 +204,43 @@ class main_module
                 // Imposta la durata predefinita a 2 ore (120 minuti)
                 $default_duration = 120;
                 
-                // Ottieni la cronologia ban/warning
+                // Ottieni la cronologia ban/warning/timeout (ultimi 2 anni)
                 $listener = $phpbb_container->get('marcozp.timeout.event.listener');
                 $history = $listener->get_user_history_from_log($user_id);
-                
-                // Calcola indice di rischio
-                $risk_index = $listener->calculate_disciplinary_index(
+
+                // Calcola la percentuale karma (cumulativa, nessun tetto)
+                $karma_percent = $listener->calculate_karma_percent(
                     $history['ban_count'],
                     $history['warning_count'],
                     $history['timeout_count']
                 );
 
-                // Calcola il colore in base al rischio
-                $risk_color = '#4CAF50';
-                if ($risk_index <= 4) {
+                // Colore del meter in base alla fascia di rischio
+                if ($karma_percent <= 4) {
                     $risk_color = '#CCCCCC';
-                } elseif ($risk_index <= 20) {
+                } elseif ($karma_percent <= 20) {
                     $risk_color = '#4CAF50';
-                } elseif ($risk_index <= 40) {
+                } elseif ($karma_percent <= 40) {
                     $risk_color = '#FFC107';
-                } elseif ($risk_index <= 60) {
+                } elseif ($karma_percent <= 60) {
                     $risk_color = '#FF9800';
-                } elseif ($risk_index <= 85) {
+                } elseif ($karma_percent <= 85) {
                     $risk_color = '#F44336';
                 } else {
                     $risk_color = '#9C27B0';
                 }
 
-                // DEBUG: Verifica template
-                error_log("Active template: " . $this->tpl_name);
-                
-                // Output diretto come fallback
-                if (empty($this->tpl_name)) {
-                    echo '<div class="panel"><div class="inner">';
-                    echo '<h3>DEBUG: User History</h3>';
-                    echo '<p>Bans: ' . $history['ban_count'] . '</p>';
-                    echo '<p>Warnings: ' . $history['warning_count'] . '</p>';
-                    echo '</div></div>';
-                }
-                
-                // Assegnazione standard al template
                 $template->assign_vars([
                     'BAN_COUNT' => $history['ban_count'],
                     'WARNING_COUNT' => $history['warning_count'],
-                    'TIMEOUT_COUNT' => $history['timeout_count'] ?? 0, // Aggiunto questa linea
-                    'NEW_RISK_INDEX' => $risk_index,
+                    'TIMEOUT_COUNT' => $history['timeout_count'],
+                    'NEW_RISK_INDEX' => $karma_percent,
+                    'RISK_METER_WIDTH' => min(100, $karma_percent), // il valore reale può superare 100, la barra no
                     'RISK_COLOR' => $risk_color,
                     'L_RISK_INDEX' => $user->lang('RISK_INDEX'),
                     'SHOW_HISTORY' => true,
                     'L_BAN_HISTORY' => $user->lang('BAN_HISTORY'),
-                    'L_WARNING_HISTORY' => $user->lang('WARNING_HISTORY')
-                ]);
-                
-                $template->assign_vars([
+                    'L_WARNING_HISTORY' => $user->lang('WARNING_HISTORY'),
                     'U_ACTION' => $this->u_action,
                     'U_VIEW_POST' => append_sid("{$phpbb_root_path}viewtopic.{$phpEx}"),
                     'USERNAME' => $username,
@@ -249,9 +248,10 @@ class main_module
                     'S_IS_POST' => ($post_id > 0),
                     'POST_ID' => $post_id,
                     'TOPIC_ID' => $topic_id,
-                    'DURATION' => $default_duration, // Imposta la durata predefinita a 60 minuti
-                    'MAX_DURATION' => $max_duration, // Passa il valore massimo al template
-                    'S_TIMEOUT_USERNAME_READONLY' => ($user_id > 0), // Rende il campo username in sola lettura se abbiamo l'ID
+                    'DURATION' => $default_duration,
+                    'MAX_DURATION' => $max_duration,
+                    'KARMA_PERCENT' => $karma_percent,
+                    'S_TIMEOUT_USERNAME_READONLY' => ($user_id > 0),
                 ]);
                 
                 break;

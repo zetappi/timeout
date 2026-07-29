@@ -774,24 +774,25 @@ class main_listener implements EventSubscriberInterface
     }
     
     /**
-     * Calcola un indice di rischio disciplinare
+     * Calcola la percentuale di aumento della durata del timeout in base
+     * alla storia disciplinare dell'utente negli ultimi 2 anni (vedi
+     * get_user_history_from_log). Cumulativo: ogni ban pesa 20 punti,
+     * ogni warning 10, ogni timeout precedente 10. Nessun tetto massimo:
+     * il valore viene applicato direttamente come moltiplicatore sulla
+     * durata scelta dal moderatore (vedi apply_karma_multiplier).
      */
-    public function calculate_disciplinary_index($ban, $warning, $timeout, $weights = [], $max_score = 100)
+    public function calculate_karma_percent($ban_count, $warning_count, $timeout_count)
     {
-        $defaults = [
-            'ban'     => 5,
-            'warning' => 2,
-            'timeout' => 3,
-        ];
+        return ($ban_count * 20) + ($warning_count * 10) + ($timeout_count * 10);
+    }
 
-        $w = array_merge($defaults, $weights);
-        $score = ($ban * $w['ban']) + ($warning * $w['warning']) + ($timeout * $w['timeout']);
-        $risk_index = min(100, max(0, ($score / $max_score) * 100));
-        
-        // Debug del calcolo
-        error_log("[RISK_CALC] Ban: {$ban}, Warn: {$warning}, Timeout: {$timeout} => Score: {$score}/{$max_score} => Index: {$risk_index}");
-        
-        return round($risk_index, 2);
+    /**
+     * Applica la percentuale karma alla durata scelta (in minuti),
+     * arrotondando al minuto.
+     */
+    public function apply_karma_multiplier($duration_minutes, $karma_percent)
+    {
+        return (int) round($duration_minutes * (1 + ($karma_percent / 100)));
     }
     
     /**

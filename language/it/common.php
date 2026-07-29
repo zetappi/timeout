@@ -115,6 +115,7 @@ $lang = array_merge($lang, [
 	'USER_HISTORY'           => 'Cronologia Utente',
 	'TIMEOUT_TOTAL'          => 'Timeout totali',
 	'RISK_INDEX'             => 'Fattore Karma',
-	'RISK_INDEX_EXPLAIN'     => 'Calcolato in base alla storia disciplinare (0-100)',
+	'RISK_INDEX_EXPLAIN'     => 'Storia disciplinare ultimi 2 anni: +20% per ban, +10% per warning, +10% per timeout precedente. Aumenta automaticamente la durata del timeout applicato.',
+	'KARMA_EFFECTIVE_DURATION' => 'Durata effettiva con fattore karma:',
 	'TIMEOUT_USER_CANNOT_INTERACT'=> 'L’utente in modalità timeout non può interagire fino alla scadenza del tempo.',
 ]);

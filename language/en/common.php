@@ -111,6 +111,7 @@ $lang = array_merge($lang, [
 	'MINUTES' => 'Minutes',
 	'TIMEOUT_BADGE_TEXT' => 'In timeout',
 	'RISK_INDEX'             => 'Karma Factor',
-	'RISK_INDEX_EXPLAIN'     => 'Calculated based on disciplinary history (0-100)',
+	'RISK_INDEX_EXPLAIN'     => 'Disciplinary history in the last 2 years: +20% per ban, +10% per warning, +10% per previous timeout. Automatically increases the applied timeout duration.',
+	'KARMA_EFFECTIVE_DURATION' => 'Effective duration with karma factor:',
 	'TIMEOUT_USER_CANNOT_INTERACT' => 'The user in timeout mode cannot interact until the time expires.',
 ]);
