@@ -84,6 +84,14 @@
 			</dd>
 		</dl>
 		<dl>
+			<dt><label for="timeout_reason_preset">{L_TIMEOUT_REASON_PRESET}{L_COLON}</label></dt>
+			<dd>
+				<select name="timeout_reason_preset" id="timeout_reason_preset" class="inputbox" onchange="marcozp_apply_reason_preset(this);">
+					<option value="custom" selected="selected">{L_TIMEOUT_REASON_PRESET_CUSTOM}</option>
+					<option value="mod_decision" data-preset-text="{L_TIMEOUT_REASON_PRESET_MOD_DECISION}">{L_TIMEOUT_REASON_PRESET_MOD_DECISION}</option>
+					<option value="offtopic" data-preset-text="{L_TIMEOUT_REASON_PRESET_OFFTOPIC}">{L_TIMEOUT_REASON_PRESET_OFFTOPIC}</option>
+				</select>
+			</dd>
 			<dt><label for="timeout_reason">{L_TIMEOUT_REASON}{L_COLON}</label><br /><span>{L_TIMEOUT_REASON_EXPLAIN}</span></dt>
 			<dd><textarea name="timeout_reason" id="timeout_reason" class="inputbox" rows="3" cols="40">{REASON}</textarea></dd>
 		</dl>
@@ -104,6 +112,28 @@
 </form>
 
 <script>
+var marcozp_original_reason = null;
+
+function marcozp_apply_reason_preset(select)
+{
+	var textarea = document.getElementById('timeout_reason');
+	if (!textarea) return;
+
+	if (marcozp_original_reason === null)
+	{
+		marcozp_original_reason = textarea.value;
+	}
+
+	if (select.value === 'custom')
+	{
+		textarea.value = marcozp_original_reason;
+		return;
+	}
+
+	var option = select.options[select.selectedIndex];
+	textarea.value = option.getAttribute('data-preset-text') || '';
+}
+
 function marcozp_format_minutes(totalMinutes)
 {
 	var days = Math.floor(totalMinutes / 1440);

@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.14] - 2026-07-29
+
+### Added
+- Preset reason dropdown above the timeout reason textarea in the "Apply Timeout"
+  form, with two predefined options: "You have been placed in Timeout by moderator
+  decision" and "You have been placed in Timeout for repeated Off Topic behavior"
+  (EN, IT)
+- Selecting a preset replaces the textarea content; selecting "Custom" (the default,
+  pre-selected option) restores whatever was in the textarea when the page loaded -
+  including the existing auto-generated per-post message ("Questa notifica ti
+  avverte...") when arriving from a post link, which remains the unchanged default
+  behavior
+- New language strings: `TIMEOUT_REASON_PRESET`, `TIMEOUT_REASON_PRESET_CUSTOM`,
+  `TIMEOUT_REASON_PRESET_MOD_DECISION`, `TIMEOUT_REASON_PRESET_OFFTOPIC` (EN, IT)
+- Purely client-side (no PHP/submit changes): the dropdown only pre-fills the
+  existing free-text `timeout_reason` field, which the moderator can still edit
+  before submitting - the server continues to receive and store whatever text is
+  in the textarea at submit time, same as before this change
+
 ## [0.0.13] - 2026-07-29
 
 ### Changed
