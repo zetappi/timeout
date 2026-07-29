@@ -48,8 +48,14 @@ class fix_mcp_auth_prefix extends \phpbb\db\migration\migration
 
 	public function revert_data()
 	{
-		return [
-			['custom', [[$this, 'fix_module_auth_prefix']]],
-		];
+		// No-op intenzionale. Ripristinare 'm_timeout' non avrebbe senso
+		// (tornerebbe al valore che fix_mcp_auth aveva già corretto una
+		// volta, non a uno stato "prima" valido) e chiamare di nuovo
+		// fix_module_auth_prefix() (il bug originale in questo file)
+		// eseguirebbe l'update in avanti invece di annullarlo. Il record
+		// module_auth stesso viene comunque rimosso dal record module.add
+		// corrispondente in install_extension.php quando phpBB inverte
+		// automaticamente il suo update_data() durante il purge.
+		return [];
 	}
 }

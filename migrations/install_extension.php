@@ -97,4 +97,13 @@ class install_extension extends \phpbb\db\migration\migration
             ]],
         ];
     }
+
+    // Nota: nessun revert_data() esplicito qui. Il Migrator core di phpBB
+    // (phpbb/db/migrator.php::revert_do()) combina automaticamente
+    // reverse_update_data(update_data()) con un eventuale revert_data()
+    // esplicito - ogni step config.add/permission.add/permission.permission_set/
+    // module.add in update_data() viene già invertito automaticamente
+    // (rimozione config, permesso, e disassegnazione dai ruoli). Aggiungere
+    // qui un revert_data() che rifà manualmente le stesse rimozioni
+    // duplicherebbe il lavoro del reverse automatico durante un purge reale.
 }

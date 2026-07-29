@@ -84,6 +84,7 @@ $lang = array_merge($lang, [
 	'TIMEOUT_STATUS_EXPIRED' => 'Expired',
 	'TIMEOUT_USER_INFO_TITLE' => 'User Timeout Information',
 	'TIMEOUT_COUNT'          => 'Total Timeouts Received',
+	'TIMEOUT_POST'           => 'Related Post',
 	'TIMEOUT_NO_HISTORY'     => 'No timeout history found for this user.',
 	'TIMEOUT_USER_IS_IN_TIMEOUT' => 'This user is currently in timeout.',
 	'TIMEOUT_TIME_UNITS'     => [

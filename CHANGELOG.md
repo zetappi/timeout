@@ -5,6 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.12] - 2026-07-29
+
+### Fixed (pre-deploy verification pass)
+- Added missing English translation `TIMEOUT_POST` in `language/en/common.php`
+  (existed only in Italian; the Timeout History table's "Related Post" column
+  header would have rendered as the raw key `TIMEOUT_POST` on an English-language
+  board)
+- Added missing `ALL` and `FILTER` strings (EN, IT) in `language/{en,it}/info_acp_timeout.php`,
+  used by the ACP "Manage Timeouts" status filter dropdown and its submit button
+  (pre-existing gap, not introduced by this session's work, caught by a full
+  cross-check of every `{L_*}` placeholder referenced in every template against
+  every key actually defined in the language files the corresponding module loads)
+- Fixed `migrations/fix_mcp_auth_prefix.php`'s `revert_data()`: it called
+  `fix_module_auth_prefix()` again (the same method that applies the fix forward)
+  instead of being a no-op, meaning a real `extension:purge` would have re-applied
+  the fix instead of reverting it. Corrected to an explicit no-op with a comment
+  explaining why (mirrors the "fix-type-migration revert" pattern for schema fixes)
+
+### Verified (pre-deploy)
+- `php -l` clean on every `.php` file in the extension (module, controller, event
+  listener, migrations, notification)
+- Full `extension:disable` → `cache:purge` → `extension:enable` cycle completes
+  without errors; all 5 migrations report `migration_schema_done=1` and
+  `migration_data_done=1` with a consistent `depends_on()` chain
+  (`install_extension` → `fix_mcp_auth` → `fix_mcp_auth_prefix`)
+- Confirmed via phpBB core source (`phpbb/db/migrator.php::revert_do()`) that
+  `install_extension.php` correctly needs no explicit `revert_data()`: the
+  Migrator automatically reverses every `config.add`/`permission.add`/
+  `permission.permission_set`/`module.add` step in `update_data()` on a real
+  `extension:purge` (via `reverse_update_data()`) - an explicit `revert_data()`
+  duplicating those same removals was considered and rejected as redundant/risky
+- Live request verification (curl with a real session's sid/cookie/User-Agent,
+  not just `php -l`) confirms MCP main/active/history pages render without
+  fatal errors or PHP warnings after the full disable/enable cycle
+- Every `{L_XXX}` placeholder in every MCP and ACP template cross-checked
+  against the language files its module actually loads (not assumed) - two
+  real gaps found and fixed (above); remaining unmatched keys confirmed to
+  exist in phpBB core language files (`COLON`, `SUBMIT`, `USERNAME`, `ACTION`,
+  `CONFIRM_OPERATION`, `NO`, `RESET`, `YES`)
+- Confirmed no JavaScript-breaking unescaped ASCII apostrophes remain in any
+  language string embedded inside inline `<script>` blocks (`TIMEOUT_CONFIRM_END`,
+  `TIMEOUT_CONFIRM_APPLY`, `TIMEOUT_CONFIRM_EDIT`)
+
+### Known limitations (not fixed, documented for awareness)
+- `timeout_max_duration` in this environment's database currently holds a
+  stale test value (30000) above the 43200 (30-day) ceiling introduced in
+  v0.0.2; harmless (the ACP form's own max/min still enforce 1-43200 on
+  save) but worth resetting via ACP before relying on the configured value
+- A real `extension:purge` has never been executed in this environment
+  (only `disable`/`enable` cycles) - the reverse-data behavior described
+  above is verified against phpBB core source, not by an actual purge test,
+  since purging would destroy this environment's test data
+
 ## [0.0.11] - 2026-07-29
 
 ### Changed
