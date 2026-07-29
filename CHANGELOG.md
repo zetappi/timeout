@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.6] - 2026-07-29
+
+### Changed
+- Replaced the interactive range slider for timeout duration with a fixed dropdown
+  (`<select>`) offering preset values: 30min, 1h, 2h, 4h, 8h, 24h, 2d, 7d, 14d, 30d
+- Default duration changed from 60 minutes to 2 hours (120 minutes)
+- Added server-side validation restricting `suggested_duration` to the exact set of
+  allowed preset values (rejects any other value, including manipulated POST data)
+- Removed `timeout_slider.js` (no longer needed, dropdown requires no JavaScript)
+- Removed now-unused language strings `DURATION_MINUTES`, `DURATION_READABLE`,
+  `DURATION_RANGE_HELP`; added `DURATION_30MIN` through `DURATION_30D` (EN, IT)
+
 ## [0.0.5] - 2026-07-29
 
 ### Fixed

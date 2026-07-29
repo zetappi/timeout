@@ -62,15 +62,21 @@ class main_module
                     $duration_minutes = $request->variable('suggested_duration', 0);
                     $reason = $request->variable('timeout_reason', '', true); // La motivazione è facoltativa, può essere vuota
                     $notify_user = $request->variable('notify_user', false);
-                    
+
                     // Ottieni la durata massima dalle impostazioni ACP
-                    $max_duration = isset($phpbb_container->get('config')['timeout_max_duration']) ? 
+                    $max_duration = isset($phpbb_container->get('config')['timeout_max_duration']) ?
                                     (int)$phpbb_container->get('config')['timeout_max_duration'] : 1440; // 24 ore default
-                    
+
                     if ($duration_minutes <= 0) {
                         trigger_error($user->lang('TIMEOUT_DURATION_INVALID'));
                     }
-                    
+
+                    // Verifica che la durata sia uno dei valori ammessi dal dropdown
+                    $allowed_durations = [30, 60, 120, 240, 480, 1440, 2880, 10080, 20160, 43200];
+                    if (!in_array($duration_minutes, $allowed_durations, true)) {
+                        trigger_error($user->lang('TIMEOUT_DURATION_INVALID'));
+                    }
+
                     // Verifica se la durata supera il massimo consentito
                     if ($duration_minutes > $max_duration) {
                         trigger_error($user->lang('TIMEOUT_MAX_DURATION_EXCEEDED', $max_duration));
@@ -180,8 +186,8 @@ class main_module
                 $max_duration = isset($phpbb_container->get('config')['timeout_max_duration']) ? 
                                 (int)$phpbb_container->get('config')['timeout_max_duration'] : 1440; // 24 ore default
                 
-                // Imposta la durata predefinita a 60 minuti come richiesto
-                $default_duration = 60;
+                // Imposta la durata predefinita a 2 ore (120 minuti)
+                $default_duration = 120;
                 
                 // Ottieni la cronologia ban/warning
                 $listener = $phpbb_container->get('marcozp.timeout.event.listener');

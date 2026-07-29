@@ -1,7 +1,5 @@
 <!-- INCLUDE mcp_header.html -->
 
-<script src="{ROOT_PATH}ext/marcozp/timeout/styles/prosilver/template/js/timeout_slider.js"></script>
-
 <style>
 .risk-meter {
 	width: 150px;
@@ -66,27 +64,18 @@
 		<dl>
 			<dt><label for="suggested_duration">{L_TIMEOUT_DURATION}{L_COLON}</label><br /><span>{L_TIMEOUT_DURATION_EXPLAIN}</span></dt>
 			<dd>
-				<div style="margin-bottom: 10px;">
-					<input type="range"
-						   id="suggested_duration"
-						   name="suggested_duration"
-						   min="30"
-						   max="43200"
-						   value="{DURATION}"
-						   step="15"
-						   style="width: 100%; cursor: pointer;" />
-				</div>
-				<div style="display: flex; gap: 15px; flex-wrap: wrap;">
-					<div style="flex: 1; min-width: 150px;">
-						<strong>{L_DURATION_MINUTES}:</strong> <span id="duration_minutes">{DURATION}</span>
-					</div>
-					<div style="flex: 1; min-width: 150px;">
-						<strong>{L_DURATION_READABLE}:</strong> <span id="duration_readable">1 ora</span>
-					</div>
-				</div>
-				<div style="margin-top: 10px; font-size: 0.9em; color: #666;">
-					{L_DURATION_RANGE_HELP}
-				</div>
+				<select name="suggested_duration" id="suggested_duration" class="inputbox">
+					<option value="30"<!-- IF DURATION == 30 --> selected="selected"<!-- ENDIF -->>{L_DURATION_30MIN}</option>
+					<option value="60"<!-- IF DURATION == 60 --> selected="selected"<!-- ENDIF -->>{L_DURATION_1H}</option>
+					<option value="120"<!-- IF DURATION == 120 or not DURATION --> selected="selected"<!-- ENDIF -->>{L_DURATION_2H}</option>
+					<option value="240"<!-- IF DURATION == 240 --> selected="selected"<!-- ENDIF -->>{L_DURATION_4H}</option>
+					<option value="480"<!-- IF DURATION == 480 --> selected="selected"<!-- ENDIF -->>{L_DURATION_8H}</option>
+					<option value="1440"<!-- IF DURATION == 1440 --> selected="selected"<!-- ENDIF -->>{L_DURATION_24H}</option>
+					<option value="2880"<!-- IF DURATION == 2880 --> selected="selected"<!-- ENDIF -->>{L_DURATION_2D}</option>
+					<option value="10080"<!-- IF DURATION == 10080 --> selected="selected"<!-- ENDIF -->>{L_DURATION_7D}</option>
+					<option value="20160"<!-- IF DURATION == 20160 --> selected="selected"<!-- ENDIF -->>{L_DURATION_14D}</option>
+					<option value="43200"<!-- IF DURATION == 43200 --> selected="selected"<!-- ENDIF -->>{L_DURATION_30D}</option>
+				</select>
 			</dd>
 		</dl>
 		<dl>
