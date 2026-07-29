@@ -303,8 +303,76 @@ class main_module
                         trigger_error($user->lang('TIMEOUT_NOT_FOUND'));
                     }
                 }
-                
-                $sql = 'SELECT t.*, u.username, u.user_colour, u.user_avatar, u.user_avatar_type, u.user_avatar_width, u.user_avatar_height, 
+
+                // Modifica della durata di un timeout attivo
+                if ($action === 'edit' && $timeout_id > 0 && $request->is_set_post('submit_edit_duration')) {
+                    // Verifica il form token per la sicurezza
+                    if (!check_form_key('mcp_timeout_edit')) {
+                        trigger_error($user->lang('FORM_INVALID'));
+                    }
+
+                    // Verifica il token del link che ha aperto il form inline
+                    if (!check_link_hash($request->variable('hash', ''), 'timeout_edit_' . $timeout_id)) {
+                        trigger_error($user->lang('FORM_INVALID'));
+                    }
+
+                    $new_duration_minutes = $request->variable('edit_duration', 0);
+
+                    // Stessa whitelist di durate usata nel form di applicazione timeout
+                    $allowed_durations = [30, 60, 120, 240, 480, 1440, 2880, 10080, 20160, 43200];
+                    if (!in_array($new_duration_minutes, $allowed_durations, true)) {
+                        trigger_error($user->lang('TIMEOUT_DURATION_INVALID'));
+                    }
+
+                    // Verifica se la durata supera il massimo consentito nell'ACP
+                    $max_duration = isset($phpbb_container->get('config')['timeout_max_duration']) ?
+                                    (int)$phpbb_container->get('config')['timeout_max_duration'] : 1440;
+                    if ($new_duration_minutes > $max_duration) {
+                        trigger_error($user->lang('TIMEOUT_MAX_DURATION_EXCEEDED', $max_duration));
+                    }
+
+                    // Ottieni l'ID utente dal timeout prima di aggiornarlo
+                    $sql = 'SELECT user_id FROM ' . $table_prefix . 'user_timeouts WHERE timeout_id = ' . (int) $timeout_id;
+                    $result = $db->sql_query($sql);
+                    $timeout_user_id = (int) $db->sql_fetchfield('user_id');
+                    $db->sql_freeresult($result);
+
+                    if ($timeout_user_id > 0) {
+                        // La nuova scadenza è calcolata da adesso, non dall'inizio originale del timeout
+                        $new_end_time = time() + ($new_duration_minutes * 60);
+
+                        $sql = 'UPDATE ' . $table_prefix . 'user_timeouts
+                                SET timeout_end = ' . $new_end_time . '
+                                WHERE timeout_id = ' . (int) $timeout_id;
+                        $db->sql_query($sql);
+
+                        // Aggiorna lo stato dell'utente con la nuova scadenza
+                        $sql = 'UPDATE ' . USERS_TABLE . '
+                                SET user_timeout_end = ' . $new_end_time . '
+                                WHERE user_id = ' . $timeout_user_id;
+                        $db->sql_query($sql);
+
+                        // Aggiorna la sessione dell'utente se è online
+                        $sql = 'UPDATE ' . SESSIONS_TABLE . '
+                                SET session_timeout_end = ' . $new_end_time . '
+                                WHERE session_user_id = ' . $timeout_user_id;
+                        $db->sql_query($sql);
+
+                        // Aggiungi un log per la modifica del timeout
+                        $log = $phpbb_container->get('log');
+                        $log->add('mod', $user->data['user_id'], $user->ip, 'Durata timeout modificata per utente ID ' . $timeout_user_id . ', nuova scadenza: ' . $user->format_date($new_end_time), false, []);
+
+                        $message = $user->lang('TIMEOUT_EDIT_SUCCESS');
+                        $message .= '<br><br>' . $user->lang('RETURN_PAGE', '<a href="' . $this->u_action . '">', '</a>');
+                        trigger_error($message);
+                    } else {
+                        trigger_error($user->lang('TIMEOUT_NOT_FOUND'));
+                    }
+                }
+
+                add_form_key('mcp_timeout_edit');
+
+                $sql = 'SELECT t.*, u.username, u.user_colour, u.user_avatar, u.user_avatar_type, u.user_avatar_width, u.user_avatar_height,
                                 m.username AS mod_username, m.user_colour AS mod_user_colour, p.post_subject, p.topic_id
                         FROM ' . $table_prefix . 'user_timeouts t
                         LEFT JOIN ' . USERS_TABLE . ' u ON (u.user_id = t.user_id)
@@ -314,9 +382,10 @@ class main_module
                         AND t.timeout_status = 1
                         ORDER BY t.timeout_end DESC';
                 $result = $db->sql_query($sql);
-                
+
                 while ($row = $db->sql_fetchrow($result)) {
                     $template->assign_block_vars('timeouts', [
+                        'TIMEOUT_ID' => $row['timeout_id'],
                         'USER_ID' => $row['user_id'],
                         'USERNAME' => \get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
                         'RAW_USERNAME' => $row['username'],
@@ -330,10 +399,12 @@ class main_module
                         'TOPIC_ID' => $row['topic_id'],
                         'POST_ID' => $row['post_id'],
                         'U_REMOVE' => $this->u_action . '&amp;action=remove&amp;timeout_id=' . $row['timeout_id'] . '&amp;hash=' . \generate_link_hash('timeout_remove_' . $row['timeout_id']),
+                        'EDIT_HASH' => \generate_link_hash('timeout_edit_' . $row['timeout_id']),
+                        'CURRENT_DURATION' => (int)round(($row['timeout_end'] - time()) / 60), // minuti rimanenti, per preselezionare l'opzione più vicina nel form di modifica
                     ]);
                 }
                 $db->sql_freeresult($result);
-                
+
                 // Conteggio timeout per determinare se ci sono timeout da mostrare
                 $sql = 'SELECT COUNT(*) as count FROM ' . $table_prefix . 'user_timeouts 
                         WHERE timeout_end > ' . time() . ' AND timeout_status = 1';

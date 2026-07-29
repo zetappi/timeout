@@ -31,6 +31,34 @@
 						<!-- IF timeouts.U_REMOVE -->
 						<a href="{timeouts.U_REMOVE}" data-username="{timeouts.RAW_USERNAME}" onclick="return marcozp_timeout_end_confirm(this);">{L_TIMEOUT_END_NOW}</a>
 						<!-- ENDIF -->
+						&nbsp;|&nbsp;
+						<a href="#" onclick="marcozp_timeout_toggle_edit({timeouts.TIMEOUT_ID}); return false;">{L_TIMEOUT_EDIT}</a>
+					</td>
+				</tr>
+				<tr id="edit_row_{timeouts.TIMEOUT_ID}" style="display: none;">
+					<td colspan="7">
+						<form method="post" action="{U_ACTION}" onsubmit="return marcozp_timeout_edit_confirm(this);">
+							<label for="edit_duration_{timeouts.TIMEOUT_ID}">{L_TIMEOUT_NEW_DURATION}{L_COLON}</label>
+							<select name="edit_duration" id="edit_duration_{timeouts.TIMEOUT_ID}" class="inputbox">
+								<option value="30">{L_DURATION_30MIN}</option>
+								<option value="60">{L_DURATION_1H}</option>
+								<option value="120" selected="selected">{L_DURATION_2H}</option>
+								<option value="240">{L_DURATION_4H}</option>
+								<option value="480">{L_DURATION_8H}</option>
+								<option value="1440">{L_DURATION_24H}</option>
+								<option value="2880">{L_DURATION_2D}</option>
+								<option value="10080">{L_DURATION_7D}</option>
+								<option value="20160">{L_DURATION_14D}</option>
+								<option value="43200">{L_DURATION_30D}</option>
+							</select>
+							<input type="hidden" name="action" value="edit" />
+							<input type="hidden" name="timeout_id" value="{timeouts.TIMEOUT_ID}" />
+							<input type="hidden" name="hash" value="{timeouts.EDIT_HASH}" />
+							<input type="hidden" name="edit_username" value="{timeouts.RAW_USERNAME}" />
+							<input type="submit" name="submit_edit_duration" value="{L_SUBMIT}" class="button2" />
+							<a href="#" onclick="marcozp_timeout_toggle_edit({timeouts.TIMEOUT_ID}); return false;">{L_TIMEOUT_CANCEL}</a>
+							{S_FORM_TOKEN}
+						</form>
 					</td>
 				</tr>
 				<!-- END timeouts -->
@@ -48,6 +76,28 @@ function marcozp_timeout_end_confirm(link)
 {
 	var username = link.getAttribute('data-username');
 	var message = '{L_TIMEOUT_CONFIRM_END}'.replace('%1$s', username);
+
+	return confirm(message);
+}
+
+function marcozp_timeout_toggle_edit(timeoutId)
+{
+	var row = document.getElementById('edit_row_' + timeoutId);
+	if (row)
+	{
+		row.style.display = (row.style.display === 'none') ? '' : 'none';
+	}
+}
+
+function marcozp_timeout_edit_confirm(form)
+{
+	var username = form.edit_username.value;
+	var durationSelect = form.edit_duration;
+	var durationLabel = durationSelect.options[durationSelect.selectedIndex].text;
+
+	var message = '{L_TIMEOUT_CONFIRM_EDIT}'
+		.replace('%1$s', username)
+		.replace('%2$s', durationLabel);
 
 	return confirm(message);
 }

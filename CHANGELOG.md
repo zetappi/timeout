@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.10] - 2026-07-29
+
+### Added
+- "Modifica" link next to "Termina Ora" in the Active Timeouts page, opening an inline
+  mini-form (no page reload) to change an active timeout's duration
+- New duration is always calculated from now (new `timeout_end` = current time +
+  selected duration), not extended/reduced from the original `timeout_start`; same
+  preset dropdown (30min-30days) used elsewhere, defaulting to 2 hours
+- Confirmation prompt before submitting the new duration, summarizing username and
+  selected duration (same pattern as the apply/end-timeout confirmations)
+- New PHP branch handling `action=edit` in the `active` mode: validates the duration
+  against the same whitelist and ACP maximum used by the apply-timeout form, updates
+  `user_timeouts.timeout_end`, `USERS_TABLE.user_timeout_end` and
+  `SESSIONS_TABLE.session_timeout_end` (mirrors the existing remove-timeout logic,
+  but sets a new expiry instead of ending it), and logs the change via the moderator log
+- New language strings (EN, IT): `TIMEOUT_NEW_DURATION`, `TIMEOUT_CONFIRM_EDIT`,
+  `TIMEOUT_EDIT_SUCCESS`
+- New template variables `TIMEOUT_ID` and `EDIT_HASH` (link-hash scoped to
+  `timeout_edit_<id>`, separate from the `timeout_remove_<id>` hash already used
+  by the remove action) assigned in both the `active` block var loop
+
+### Security
+- The inline edit form is protected by both a form token (`check_form_key`, shared
+  across all rows since it only validates the key name) and a per-timeout link hash
+  (`check_link_hash` against `timeout_edit_<id>`, unique per row) - mirrors the
+  existing remove-timeout protection pattern
+
 ## [0.0.9] - 2026-07-29
 
 ### Added
