@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.9] - 2026-07-29
+
+### Added
+- Confirmation prompt before ending an active timeout via "End Now", in both the
+  "Active Timeouts" and "Timeout History" MCP pages, summarizing the target username
+- New template variable `RAW_USERNAME` (plain text, no HTML) assigned alongside the
+  existing `USERNAME` (which contains `get_username_string('full', ...)` HTML markup)
+  so the confirmation message can safely read the username via a `data-username`
+  attribute instead of embedding raw HTML/unescaped text inside inline JavaScript
+- `TIMEOUT_CONFIRM_END` (EN, IT) updated to include a `%1$s` username placeholder;
+  this string previously existed but was dead code, never referenced by any template
+- New string `NO_TIMEOUT_HISTORY` (EN, IT) for the empty-state message on the
+  Timeout History page (the previous Twig template referenced `NO_TIMEOUT_RECORDS`,
+  a key that was never defined anywhere and would have rendered as a raw key name)
+
+### Changed
+- Rewrote `mcp_timeout_active.html` and `mcp_timeout_history.html` from Twig to
+  classic phpBB template syntax (same rationale as `mcp_timeout_main.html` in a
+  previous release: MCP templates use classic syntax, and several variable names
+  in the old Twig templates did not match what the PHP side actually assigns,
+  e.g. `loops.timeouts` vs the real block name `timeouts`, `TIMEOUT_MODERATOR`/
+  `NO_TIMEOUT_RECORDS` which were never defined in any language file)
+- Removed `data-ajax="true"`/`data-refresh="true"` from the "End Now" links: the
+  AJAX flow bypassed the new confirmation prompt entirely (phpBB's AJAX confirm
+  mechanism is server-driven via `confirm_box()`/JSON, not a static client-side
+  attribute), so the link now performs a normal navigation with a full page reload
+  after confirming
+
 ## [0.0.8] - 2026-07-29
 
 ### Added

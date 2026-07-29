@@ -1,46 +1,56 @@
-{% INCLUDE 'mcp_header.html' %}
+<!-- INCLUDE mcp_header.html -->
 
-<h2>{{ lang('MCP_TIMEOUT_ACTIVE') }}</h2>
+<h2>{L_MCP_TIMEOUT_ACTIVE}</h2>
 
 <div class="panel">
 	<div class="inner">
 
-	{% if S_TIMEOUTS %}
+	<!-- IF S_TIMEOUTS -->
 		<table class="table1">
 			<thead>
 				<tr>
-					<th>{{ lang('USERNAME') }}</th>
-					<th>{{ lang('TIMEOUT_START') }}</th>
-					<th>{{ lang('TIMEOUT_END') }}</th>
-					<th>{{ lang('TIMEOUT_REMAINING') }}</th>
-					<th>{{ lang('TIMEOUT_REASON') }}</th>
-					<th>{{ lang('TIMEOUT_MOD') }}</th>
-					<th>{{ lang('TIMEOUT_ACTIONS') }}</th>
+					<th>{L_USERNAME}</th>
+					<th>{L_TIMEOUT_START}</th>
+					<th>{L_TIMEOUT_END}</th>
+					<th>{L_TIMEOUT_REMAINING}</th>
+					<th>{L_TIMEOUT_REASON}</th>
+					<th>{L_TIMEOUT_MOD}</th>
+					<th>{L_TIMEOUT_ACTIONS}</th>
 				</tr>
 			</thead>
 			<tbody>
-				{% for timeout in loops.timeouts %}
+				<!-- BEGIN timeouts -->
 				<tr>
-					<td>{{ timeout.USERNAME }}</td>
-					<td>{{ timeout.START_TIME }}</td>
-					<td>{{ timeout.END_TIME }}</td>
-					<td>{{ timeout.REMAINING }} {{ lang('MINUTES') }}</td>
-					<td>{{ timeout.REASON }}</td>
-					<td>{{ timeout.MOD_USERNAME }}</td>
+					<td>{timeouts.USERNAME}</td>
+					<td>{timeouts.START_TIME}</td>
+					<td>{timeouts.END_TIME}</td>
+					<td>{timeouts.REMAINING} {L_MINUTES}</td>
+					<td>{timeouts.REASON}</td>
+					<td>{timeouts.MOD_USERNAME}</td>
 					<td>
-						{% if timeout.U_REMOVE %}
-						<a href="{{ timeout.U_REMOVE }}" data-ajax="true" data-refresh="true">{{ lang('TIMEOUT_END_NOW') }}</a>
-						{% endif %}
+						<!-- IF timeouts.U_REMOVE -->
+						<a href="{timeouts.U_REMOVE}" data-username="{timeouts.RAW_USERNAME}" onclick="return marcozp_timeout_end_confirm(this);">{L_TIMEOUT_END_NOW}</a>
+						<!-- ENDIF -->
 					</td>
 				</tr>
-				{% endfor %}
+				<!-- END timeouts -->
 			</tbody>
 		</table>
-	{% else %}
-		<p>{{ lang('NO_ACTIVE_TIMEOUTS') }}</p>
-	{% endif %}
+	<!-- ELSE -->
+		<p>{L_NO_ACTIVE_TIMEOUTS}</p>
+	<!-- ENDIF -->
 
 	</div>
 </div>
 
-{% INCLUDE 'mcp_footer.html' %}
+<script>
+function marcozp_timeout_end_confirm(link)
+{
+	var username = link.getAttribute('data-username');
+	var message = '{L_TIMEOUT_CONFIRM_END}'.replace('%1$s', username);
+
+	return confirm(message);
+}
+</script>
+
+<!-- INCLUDE mcp_footer.html -->

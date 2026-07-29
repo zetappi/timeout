@@ -319,6 +319,7 @@ class main_module
                     $template->assign_block_vars('timeouts', [
                         'USER_ID' => $row['user_id'],
                         'USERNAME' => \get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+                        'RAW_USERNAME' => $row['username'],
                         'MOD_USERNAME' => \get_username_string('full', $row['mod_user_id'], $row['mod_username'], $row['mod_user_colour']),
                         'REASON' => $row['timeout_reason'],
                         'START_TIME' => $user->format_date($row['timeout_start']),
@@ -374,6 +375,7 @@ class main_module
                     $template->assign_block_vars('timeouts', [
                         'USER_ID' => $row['user_id'],
                         'USERNAME' => \get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+                        'RAW_USERNAME' => $row['username'],
                         'MOD_USERNAME' => \get_username_string('full', $row['mod_user_id'], $row['mod_username'], $row['mod_user_colour']),
                         'REASON' => $row['timeout_reason'],
                         'START_TIME' => $user->format_date($row['timeout_start']),
