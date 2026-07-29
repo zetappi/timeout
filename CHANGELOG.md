@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.7] - 2026-07-29
+
+### Fixed
+- Restored auto-generated reason text ("Questa notifica ti avverte che hai ricevuto un
+  timeout a causa del post...") when opening the timeout form from a specific post
+- The PHP side already computed this text into the `REASON` template variable, but the
+  rewritten template rendered an empty `<textarea>` instead of `{REASON}`, so the field
+  appeared blank even when arriving from a post link
+- Note: a curated list of preset/quick reason texts (separate from this auto-generated
+  per-post message) was never implemented — it is listed as a future enhancement in
+  FUNZIONI_E_SUGGERIMENTI.md, not something removed by the template rewrite
+
 ## [0.0.6] - 2026-07-29
 
 ### Changed
