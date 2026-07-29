@@ -12,17 +12,17 @@ class main_info
             'modes'     => [
                 'main'      => [
                     'title' => 'MCP_TIMEOUT_MAIN',
-                    'auth'  => 'm_timeout',
+                    'auth'  => 'aclf_m_timeout',
                     'cat'   => ['MCP_TIMEOUT_TITLE'],
                 ],
                 'active'    => [
                     'title' => 'MCP_TIMEOUT_ACTIVE',
-                    'auth'  => 'm_timeout',
+                    'auth'  => 'aclf_m_timeout',
                     'cat'   => ['MCP_TIMEOUT_TITLE'],
                 ],
                 'history'   => [
                     'title' => 'MCP_TIMEOUT_HISTORY',
-                    'auth'  => 'm_timeout',
+                    'auth'  => 'aclf_m_timeout',
                     'cat'   => ['MCP_TIMEOUT_TITLE'],
                 ],
             ],
