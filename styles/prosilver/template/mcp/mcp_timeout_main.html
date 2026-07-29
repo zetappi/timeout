@@ -1,5 +1,7 @@
 {% INCLUDE 'mcp_header.html' %}
 
+<script src="{{ ROOT_PATH }}ext/marcozp/timeout/styles/prosilver/template/js/timeout_slider.js"></script>
+
 <h2>{{ lang('MCP_TIMEOUT_MAIN') }}</h2>
 
 <form id="mcp_timeout" method="post" action="{{ U_ACTION }}">
@@ -31,8 +33,30 @@
 		</fieldset>
 		<!-- ENDIF -->
 		<dl>
-			<dt><label for="timeout_duration">{{ lang('TIMEOUT_DURATION') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_DURATION_EXPLAIN') }}</span></dt>
-			<dd><input type="number" class="inputbox" name="timeout_duration" id="timeout_duration" value="{{ DURATION }}" min="1" /></dd>
+			<dt><label for="suggested_duration">{{ lang('TIMEOUT_DURATION') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_DURATION_EXPLAIN') }}</span></dt>
+			<dd>
+				<div style="margin-bottom: 10px;">
+					<input type="range"
+						   id="suggested_duration"
+						   name="suggested_duration"
+						   min="30"
+						   max="43200"
+						   value="{{ DURATION }}"
+						   step="15"
+						   style="width: 100%; cursor: pointer;" />
+				</div>
+				<div style="display: flex; gap: 15px; flex-wrap: wrap;">
+					<div style="flex: 1; min-width: 150px;">
+						<strong>{{ lang('DURATION_MINUTES') }}:</strong> <span id="duration_minutes">{{ DURATION }}</span>
+					</div>
+					<div style="flex: 1; min-width: 150px;">
+						<strong>{{ lang('DURATION_READABLE') }}:</strong> <span id="duration_readable">1 ora</span>
+					</div>
+				</div>
+				<div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+					{{ lang('DURATION_RANGE_HELP') }}
+				</div>
+			</dd>
 		</dl>
 		<dl>
 			<dt><label for="timeout_reason">{{ lang('TIMEOUT_REASON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_REASON_EXPLAIN') }}</span></dt>

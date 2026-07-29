@@ -38,7 +38,10 @@ $lang = array_merge($lang, [
 
 	// Form fields and messages
 	'TIMEOUT_DURATION'              => 'Durata Timeout',
-	'TIMEOUT_DURATION_EXPLAIN'      => 'Inserisci il numero di minuti per il timeout.',
+	'TIMEOUT_DURATION_EXPLAIN'      => 'Usa il cursore per impostare la durata del timeout (30 minuti a 30 giorni).',
+	'DURATION_MINUTES'              => 'Minuti',
+	'DURATION_READABLE'             => 'Formato Leggibile',
+	'DURATION_RANGE_HELP'           => '(Minimo: 30 minuti | Massimo: 30 giorni)',
 	'TIMEOUT_REASON'                => 'Motivo Timeout',
 	'TIMEOUT_REASON_EXPLAIN'        => 'Inserisci un motivo per questo timeout che potrebbe essere mostrato all\'utente.',
 	'TIMEOUT_NOTIFY_USER'           => 'Notifica Utente',

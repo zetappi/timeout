@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.3] - 2026-07-29
+
+### Changed
+- Replaced MCP duration input field with interactive HTML5 range slider
+- Slider ranges from 30 minutes to 30 days (43,200 minutes)
+- Added real-time display of duration in both minutes and readable format (days, hours, minutes)
+- Updated MCP template with dynamic slider and JavaScript handler
+- Updated language strings (EN, IT) with slider-specific labels
+
+### Added
+- JavaScript handler for dynamic duration formatting (`timeout_slider.js`)
+- Real-time display of readable duration format while adjusting slider
+- Visual feedback with min/max duration range indicator
+
 ## [0.0.2] - 2026-07-29
 
 ### Changed
