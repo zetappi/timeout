@@ -29,10 +29,10 @@
 					<td>{timeouts.MOD_USERNAME}</td>
 					<td>
 						<!-- IF timeouts.U_REMOVE -->
-						<a href="{timeouts.U_REMOVE}" data-username="{timeouts.RAW_USERNAME}" onclick="return marcozp_timeout_end_confirm(this);">{L_TIMEOUT_END_NOW}</a>
+						<a href="{timeouts.U_REMOVE}" data-username="{timeouts.RAW_USERNAME}" onclick="return marcozp_timeout_end_confirm(this);" title="{L_TIMEOUT_END_NOW}"><i class="icon fa-times icon-red" aria-hidden="true"></i><span class="sr-only">{L_TIMEOUT_END_NOW}</span></a>
 						<!-- ENDIF -->
-						&nbsp;|&nbsp;
-						<a href="#" onclick="marcozp_timeout_toggle_edit({timeouts.TIMEOUT_ID}); return false;">{L_TIMEOUT_EDIT}</a>
+						&nbsp;
+						<a href="#" onclick="marcozp_timeout_toggle_edit({timeouts.TIMEOUT_ID}); return false;" title="{L_TIMEOUT_EDIT}"><i class="icon fa-pencil" aria-hidden="true"></i><span class="sr-only">{L_TIMEOUT_EDIT}</span></a>
 					</td>
 				</tr>
 				<tr id="edit_row_{timeouts.TIMEOUT_ID}" style="display: none;">

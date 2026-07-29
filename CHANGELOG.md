@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.11] - 2026-07-29
+
+### Changed
+- Replaced the "Termina Ora"/"Modifica Timeout" text links with Font Awesome icons
+  (red X for end-now, pencil for edit) in the Active Timeouts and Timeout History
+  pages, following the exact icon pattern already used elsewhere in phpBB's native
+  templates (`icon fa-times icon-red`, matching `posting_pm_header.html`)
+- Link text is preserved for accessibility via `title` attribute (tooltip) and a
+  visually-hidden `<span class="sr-only">` (screen readers still announce the
+  action), same pattern phpBB itself uses for icon-only actions
+
 ## [0.0.10] - 2026-07-29
 
 ### Added
