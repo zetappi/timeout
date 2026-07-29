@@ -1,0 +1,82 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_TIMEOUT_MANAGE}</h1>
+<p>{L_ACP_TIMEOUT_MANAGE_EXPLAIN}</p>
+
+<form id="acp_timeout_manage" method="post" action="{U_ACTION}">
+    <div class="action-bar top">
+        <div class="pagination">
+            <!-- IF .pagination -->
+                <!-- INCLUDE pagination.html -->
+            <!-- ELSE -->
+                {TOTAL_TIMEOUTS} &bull; {PAGE_NUMBER}
+            <!-- ENDIF -->
+        </div>
+    </div>
+    
+    <fieldset class="quick">
+        <select name="filter">
+            <option value="all"<!-- IF S_FILTER_ALL --> selected="selected"<!-- ENDIF -->>{L_TIMEOUT_FILTER_ALL}</option>
+            <option value="active"<!-- IF S_FILTER_ACTIVE --> selected="selected"<!-- ENDIF -->>{L_TIMEOUT_FILTER_ACTIVE}</option>
+            <option value="inactive"<!-- IF S_FILTER_INACTIVE --> selected="selected"<!-- ENDIF -->>{L_TIMEOUT_FILTER_INACTIVE}</option>
+        </select>
+        <input class="button2" type="submit" name="filter_submit" value="{L_GO}" />
+    </fieldset>
+
+    <table class="table1 zebra-table">
+    <thead>
+        <tr>
+            <th>{L_TIMEOUT_USER}</th>
+            <th>{L_TIMEOUT_START}</th>
+            <th>{L_TIMEOUT_END}</th>
+            <th>{L_TIMEOUT_REASON}</th>
+            <th>{L_TIMEOUT_MOD}</th>
+            <th>{L_TIMEOUT_STATUS}</th>
+            <th>{L_TIMEOUT_ACTIONS}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- IF .timeouts -->
+            <!-- BEGIN timeouts -->
+            <tr>
+                <td>{timeouts.USERNAME}</td>
+                <td>{timeouts.START_DATE}</td>
+                <td>{timeouts.END_DATE}</td>
+                <td>{timeouts.REASON}</td>
+                <td>{timeouts.MOD_USERNAME}</td>
+                <td><!-- IF timeouts.IS_ACTIVE --><strong class="error">{L_TIMEOUT_STATUS_ACTIVE}</strong><!-- ELSE -->{L_TIMEOUT_STATUS_INACTIVE}<!-- ENDIF --></td>
+                <td class="actions">
+                    <span class="up-disabled" style="display:none;">{ICON_MOVE_UP_DISABLED}</span>
+                    <span class="up"><a href="{timeouts.U_MOVE_UP}" data-ajax="row_up">{ICON_MOVE_UP}</a></span>
+                    <span class="down-disabled" style="display:none;">{ICON_MOVE_DOWN_DISABLED}</span>
+                    <span class="down"><a href="{timeouts.U_MOVE_DOWN}" data-ajax="row_down">{ICON_MOVE_DOWN}</a></span>
+                    <a href="{timeouts.U_VIEW_USER}">{L_TIMEOUT_VIEW_USER}</a>
+                    <!-- IF timeouts.IS_ACTIVE -->
+                    <a href="{timeouts.U_END_TIMEOUT}" data-ajax="true" data-refresh="true">{L_TIMEOUT_END_NOW}</a>
+                    <!-- ENDIF -->
+                    <a href="{timeouts.U_DELETE}" data-ajax="true" data-refresh="true">{L_DELETE}</a>
+                </td>
+            </tr>
+            <!-- END timeouts -->
+        <!-- ELSE -->
+            <tr>
+                <td colspan="7" class="bg1" style="text-align: center;">{L_TIMEOUT_NO_RECORDS}</td>
+            </tr>
+        <!-- ENDIF -->
+    </tbody>
+    </table>
+
+    <div class="action-bar bottom">
+        <div class="pagination">
+            <!-- IF .pagination -->
+                <!-- INCLUDE pagination.html -->
+            <!-- ELSE -->
+                {TOTAL_TIMEOUTS} &bull; {PAGE_NUMBER}
+            <!-- ENDIF -->
+        </div>
+    </div>
+    
+    {S_FORM_TOKEN}
+</form>
+
+<!-- INCLUDE overall_footer.html -->

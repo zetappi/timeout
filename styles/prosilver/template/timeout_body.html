@@ -1,0 +1,29 @@
+{% extends 'overall_header.html' %}
+{% block content %}
+<div class="panel">
+    <div class="inner">
+        <h2>{{ lang('MCP_TIMEOUT_TITLE') }}</h2>
+        
+        <!-- Sezione Cronologia Utente -->
+        {% if SHOW_HISTORY %}
+        <fieldset class="fields1">
+            <h3>{{ lang('USER_HISTORY') }}</h3>
+            <dl>
+                <dt><strong>{{ L_BAN_HISTORY }}:</strong></dt>
+                <dd>{{ BAN_COUNT }}</dd>
+            </dl>
+            <dl>
+                <dt><strong>{{ L_WARNING_HISTORY }}:</strong></dt>
+                <dd>{{ WARNING_COUNT }}</dd>
+            </dl>
+        </fieldset>
+        {% endif %}
+        
+        <!-- Form Timeout -->
+        <form method="post" action="{{ U_ACTION }}">
+            <!-- Altri campi del form qui -->
+            {{ S_FORM_TOKEN }}
+        </form>
+    </div>
+</div>
+{% endblock %}

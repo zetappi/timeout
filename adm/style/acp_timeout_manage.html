@@ -1,0 +1,98 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_ACP_TIMEOUT_MANAGE}</h1>
+
+<form id="acp_timeout_manage" method="post" action="{U_ACTION}">
+    <fieldset>
+        <legend>{L_TIMEOUT_FILTER}</legend>
+        <dl>
+            <dt><label for="username">{L_USERNAME}{L_COLON}</label></dt>
+            <dd><input type="text" name="username" id="username" value="{FILTER_USERNAME}" class="text medium" /></dd>
+        </dl>
+        <dl>
+            <dt><label for="status">{L_TIMEOUT_STATUS}{L_COLON}</label></dt>
+            <dd>
+                <select name="status" id="status">
+                    <option value="">{L_ALL}</option>
+                    <option value="1"<!-- IF FILTER_STATUS == 1 --> selected="selected"<!-- ENDIF -->>{L_TIMEOUT_STATUS_ACTIVE}</option>
+                    <option value="0"<!-- IF FILTER_STATUS == 0 --> selected="selected"<!-- ENDIF -->>{L_TIMEOUT_STATUS_EXPIRED}</option>
+                </select>
+            </dd>
+        </dl>
+        <p class="quick">
+            <input class="button2" type="submit" name="filter" value="{L_FILTER}" />
+        </p>
+    </fieldset>
+
+    <!-- IF .timeouts -->
+    <div class="pagination">
+        <ul>
+            <li class="active"><span>{TOTAL_TIMEOUTS}</span></li>
+            <!-- IF .pagination -->
+                <!-- INCLUDE pagination.html -->
+            <!-- ELSE -->
+                <li class="active"><span>{PAGE_NUMBER}</span></li>
+            <!-- ENDIF -->
+        </ul>
+    </div>
+
+    <table class="table1 zebra-table">
+        <thead>
+            <tr>
+                <th>{L_USERNAME}</th>
+                <th>{L_TIMEOUT_START}</th>
+                <th>{L_TIMEOUT_END}</th>
+                <th>{L_TIMEOUT_REASON}</th>
+                <th>{L_TIMEOUT_MOD}</th>
+                <th>{L_TIMEOUT_STATUS}</th>
+                <th>{L_ACTION}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- BEGIN timeouts -->
+            <tr>
+                <td><a href="{timeouts.U_USER_PROFILE}">{timeouts.USERNAME}</a></td>
+                <td>{timeouts.TIMEOUT_START}</td>
+                <td>{timeouts.TIMEOUT_END}</td>
+                <td>{timeouts.TIMEOUT_REASON}</td>
+                <td>{timeouts.MOD_USERNAME}</td>
+                <td>
+                    <!-- IF timeouts.IS_ACTIVE -->
+                    <span class="badge timeout-active">{L_TIMEOUT_STATUS_ACTIVE}</span>
+                    <!-- ELSE -->
+                    <span class="badge timeout-expired">{L_TIMEOUT_STATUS_EXPIRED}</span>
+                    <!-- ENDIF -->
+                    <!-- COMMENT: Debug rimosso ma conservato per uso futuro
+                    <br><small>IS_ACTIVE: <!-- IF timeouts.IS_ACTIVE -->TRUE<!-- ELSE -->FALSE<!-- ENDIF --></small>
+                    -->
+                </td>
+                <td class="actions">
+                    <!-- BEGIN switch_timeout_active -->
+                    <a href="{timeouts.U_DELETE}"><i class="icon fa-check fa-fw" aria-hidden="true"></i><span>{L_TIMEOUT_END}</span></a>
+                    <!-- END switch_timeout_active -->
+                    <a href="{timeouts.U_PURGE}" data-ajax="row_delete" onclick="return confirm('{L_CONFIRM_OPERATION}');"><i class="icon fa-times fa-fw" aria-hidden="true"></i><span>{L_TIMEOUT_PURGE}</span></a>
+                </td>
+            </tr>
+            <!-- END timeouts -->
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <ul>
+            <li class="active"><span>{TOTAL_TIMEOUTS}</span></li>
+            <!-- IF .pagination -->
+                <!-- INCLUDE pagination.html -->
+            <!-- ELSE -->
+                <li class="active"><span>{PAGE_NUMBER}</span></li>
+            <!-- ENDIF -->
+        </ul>
+    </div>
+    <!-- ELSE -->
+    <div class="errorbox">
+        <p>{L_NO_TIMEOUTS}</p>
+    </div>
+    <!-- ENDIF -->
+
+</form>
+
+<!-- INCLUDE overall_footer.html -->

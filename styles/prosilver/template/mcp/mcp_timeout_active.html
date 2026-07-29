@@ -1,0 +1,44 @@
+{% INCLUDE 'mcp_header.html' %}
+
+<h2>{{ lang('MCP_TIMEOUT_ACTIVE') }}</h2>
+
+<div class="panel">
+	<div class="inner">
+
+	{% if S_TIMEOUTS %}
+		<table class="table1">
+			<thead>
+				<tr>
+					<th>{{ lang('USERNAME') }}</th>
+					<th>{{ lang('TIMEOUT_START') }}</th>
+					<th>{{ lang('TIMEOUT_END') }}</th>
+					<th>{{ lang('TIMEOUT_REMAINING') }}</th>
+					<th>{{ lang('TIMEOUT_REASON') }}</th>
+					<th>{{ lang('TIMEOUT_MOD') }}</th>
+					<th>{{ lang('TIMEOUT_ACTIONS') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for timeout in loops.timeouts %}
+				<tr>
+					<td>{{ timeout.USERNAME }}</td>
+					<td>{{ timeout.START_DATE }}</td>
+					<td>{{ timeout.END_DATE }}</td>
+					<td>{{ timeout.REMAINING }}</td>
+					<td>{{ timeout.REASON }}</td>
+					<td>{{ timeout.MOD_USERNAME }}</td>
+					<td>
+						<a href="{{ timeout.U_END_NOW }}" data-ajax="true" data-refresh="true">{{ lang('TIMEOUT_END_NOW') }}</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p>{{ lang('NO_ACTIVE_TIMEOUTS') }}</p>
+	{% endif %}
+
+	</div>
+</div>
+
+{% INCLUDE 'mcp_footer.html' %}

@@ -1,0 +1,43 @@
+services:
+    # Main controller service
+    marcozp.timeout.controller.main:
+        class: marcozp\timeout\controller\main_controller
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '@request'
+            - '@template'
+            - '@user'
+            - '@auth'
+            - '@controller.helper'
+        public: true
+
+    # Event listener
+    marcozp.timeout.event.listener:
+        class: marcozp\timeout\event\main_listener
+        arguments:
+            - '@template'
+            - '@request'
+            - '@user'
+            - '@auth'
+            - '@config'
+            - '@dbal.conn'
+            - '@controller.helper'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%core.table_prefix%'
+        tags:
+            - { name: event.listener }
+            
+    # Notification type
+    marcozp.timeout.notification.type.timeout:
+        class: marcozp\timeout\notification\type\timeout
+        shared: false # Il servizio deve essere creato ogni volta che viene richiesto
+        parent: notification.type.base
+        calls:
+            - [set_notification_manager, ['@notification_manager']]
+            - [set_user_loader, ['@user_loader']]
+            - [set_language, ['@language']]
+            - [set_controller_helper, ['@controller.helper', '%core.root_path%', '%core.php_ext%']]
+        tags:
+            - { name: notification.type }

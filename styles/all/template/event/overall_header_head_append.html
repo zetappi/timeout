@@ -1,0 +1,25 @@
+{% INCLUDECSS '@marcozp_timeout/styles/prosilver/theme/timeout.css' %}
+<style>
+/* Stili forzati per utenti in timeout - non dipendono dall'inclusione del CSS */
+.post.is-timeout, .post[data-timeout="1"] {
+    border-left: 8px solid #BC2A4D !important;
+    border-top: 2px solid #BC2A4D !important;
+    border-right: 2px solid #BC2A4D !important;
+    border-bottom: 2px solid #BC2A4D !important;
+    background-color: #FFF0F0 !important;
+    box-shadow: 0 0 12px rgba(188, 42, 77, 0.5) !important;
+}
+
+/* Badge sopra il post */
+.timeout-warning-banner {
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: #BC2A4D;
+    color: white !important; 
+    text-align: center;
+    font-weight: bold;
+    border-radius: 3px;
+    text-shadow: 1px 1px 0 #000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+</style>

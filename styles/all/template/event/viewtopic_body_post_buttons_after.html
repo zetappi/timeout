@@ -1,0 +1,35 @@
+<!-- Controllo del bottone di timeout - VERSIONE DRASTICA -->
+
+<!-- CASO 1: Utente è già in timeout - mostro solo l'icona disabilitata -->
+{% if postrow.S_USER_IN_TIMEOUT %}
+<li>
+    <span class="button button-icon-only disabled" style="opacity: 0.5; background-color: #FFEEEE; cursor: not-allowed;" title="Utente già in timeout">
+        <i class="icon fa-ban fa-fw" aria-hidden="true" style="color: #BC2A4D;"></i><span class="sr-only">In timeout</span>
+    </span>
+</li>
+
+<!-- CASO 2: L'utente non è in timeout ma ha permessi per metterlo in timeout -->
+{% elseif postrow.S_SHOW_TIMEOUT_BUTTON %}
+<li>
+    <a href="{{ postrow.U_TIMEOUT }}" title="Metti l'utente in timeout" class="button button-icon-only">
+        <i class="icon fa-clock-o fa-fw" aria-hidden="true"></i><span class="sr-only">Timeout</span>
+    </a>
+</li>
+{% endif %}
+
+<!-- Script che applica direttamente gli stili ai post in timeout -->
+{% if postrow.S_USER_IN_TIMEOUT %}
+<script>
+(function() {
+    var currentPost = document.getElementById('p{{ postrow.POST_ID }}');
+    if (currentPost) {
+        currentPost.style.borderLeft = '8px solid #BC2A4D';
+        currentPost.style.borderTop = '2px solid #BC2A4D';
+        currentPost.style.borderRight = '2px solid #BC2A4D';
+        currentPost.style.borderBottom = '2px solid #BC2A4D';
+        currentPost.style.backgroundColor = '#FFF0F0';
+        currentPost.style.boxShadow = '0 0 12px rgba(188, 42, 77, 0.5)';
+    }
+})();
+</script>
+{% endif %}

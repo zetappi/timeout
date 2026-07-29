@@ -1,0 +1,184 @@
+<?php
+
+namespace marcozp\timeout\acp;
+
+class main_module
+{
+    public $u_action;
+    public $tpl_name;
+    public $page_title;
+
+    private function generate_timeout_hash($value)
+    {
+        return \generate_link_hash($value);
+    }
+
+    // Genera una paginazione semplice
+    private function generate_simple_pagination($base_url, $num_items, $per_page, $start_item)
+    {
+        $total_pages = ceil($num_items / $per_page);
+        if ($total_pages == 1)
+        {
+            return '';
+        }
+
+        $on_page = floor($start_item / $per_page) + 1;
+        $page_string = '';
+
+        for ($i = 1; $i <= $total_pages; $i++)
+        {
+            $start = ($i - 1) * $per_page;
+            if ($i == $on_page)
+            {
+                $page_string .= '<strong>' . $i . '</strong>';
+            }
+            else
+            {
+                $page_string .= '<a href="' . $base_url . '&amp;start=' . $start . '">' . $i . '</a>';
+            }
+            if ($i < $total_pages)
+            {
+                $page_string .= '&nbsp;|&nbsp;';
+            }
+        }
+
+        return $page_string;
+    }
+
+    public function main($id, $mode)
+    {
+        global $phpbb_container, $phpbb_root_path, $phpEx, $user, $template, $request, $db, $table_prefix, $auth;
+
+        $user->add_lang_ext('marcozp/timeout', 'info_acp_timeout');
+        
+        // Controlla i permessi di amministrazione
+        if (!$auth->acl_get('a_') || !$auth->acl_get('a_timeout'))
+        {
+            trigger_error($user->lang['NOT_AUTHORISED']);
+        }
+        
+        $this->tpl_name = 'acp_timeout_' . $mode;
+        $this->page_title = $user->lang('ACP_TIMEOUT_TITLE');
+        
+        switch ($mode) {
+            case 'settings':
+                if ($request->is_set_post('submit')) {
+                    if (!check_form_key('acp_timeout')) {
+                        trigger_error($user->lang['FORM_INVALID'] . adm_back_link($this->u_action), E_USER_WARNING);
+                    }
+                    
+                    $config = $phpbb_container->get('config');
+                    $config->set('timeout_enable', $request->variable('timeout_enable', 0));
+                    $config->set('timeout_max_duration', $request->variable('timeout_max_duration', 60));
+                    
+                    trigger_error($user->lang['ACP_TIMEOUT_SETTINGS_SAVED'] . adm_back_link($this->u_action));
+                }
+                
+                $template->assign_vars([
+                    'U_ACTION' => $this->u_action,
+                    'TIMEOUT_ENABLE' => $phpbb_container->get('config')['timeout_enable'],
+                    'TIMEOUT_MAX_DURATION' => $phpbb_container->get('config')['timeout_max_duration'],
+                ]);
+                
+                add_form_key('acp_timeout');
+                break;
+                
+            case 'manage':
+                $this->tpl_name = 'acp_timeout_manage';
+                $this->page_title = $user->lang('ACP_TIMEOUT_MANAGE');
+                
+                $action = $request->variable('action', '');
+                $timeout_id = $request->variable('timeout_id', 0);
+                
+                if ($action === 'delete' && $timeout_id) {
+                    // Verifica il token di sicurezza
+                    if (!check_link_hash($request->variable('hash', ''), 'timeout_delete_' . $timeout_id)) {
+                        trigger_error($user->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+                    }
+                    
+                    // Elimina il timeout
+                    $sql = 'DELETE FROM ' . $table_prefix . 'user_timeouts WHERE timeout_id = ' . (int) $timeout_id;
+                    $db->sql_query($sql);
+                    
+                    trigger_error($user->lang('ACP_TIMEOUT_DELETED') . adm_back_link($this->u_action));
+                }
+                
+                if ($action === 'remove' && $timeout_id) {
+                    // Verifica il token di sicurezza
+                    if (!check_link_hash($request->variable('hash', ''), 'timeout_remove_' . $timeout_id)) {
+                        trigger_error($user->lang('FORM_INVALID') . adm_back_link($this->u_action), E_USER_WARNING);
+                    }
+                    
+                    // Imposta il timeout come terminato
+                    $sql = 'UPDATE ' . $table_prefix . 'user_timeouts
+                            SET timeout_end = ' . time() . ',
+                                timeout_status = 0
+                            WHERE timeout_id = ' . (int) $timeout_id;
+                    $db->sql_query($sql);
+                    
+                    trigger_error($user->lang('ACP_TIMEOUT_REMOVED') . adm_back_link($this->u_action));
+                }
+                
+                // Vista per tutti i timeout
+                $start = $request->variable('start', 0);
+                $limit = 25; // Timeouts per pagina
+                
+                // Conteggio totale per paginazione
+                $sql = 'SELECT COUNT(*) as total_count FROM ' . $table_prefix . 'user_timeouts';
+                $result = $db->sql_query($sql);
+                $total_count = (int) $db->sql_fetchfield('total_count');
+                $db->sql_freeresult($result);
+                
+                // Query principale
+                $sql = 'SELECT t.*, u.username, u.user_colour, m.username AS mod_username, m.user_colour AS mod_user_colour
+                        FROM ' . $table_prefix . 'user_timeouts t
+                        LEFT JOIN ' . USERS_TABLE . ' u ON (u.user_id = t.user_id)
+                        LEFT JOIN ' . USERS_TABLE . ' m ON (m.user_id = t.mod_user_id)
+                        ORDER BY t.timeout_start DESC';
+                $result = $db->sql_query_limit($sql, $limit, $start);
+                
+                // DEBUG - Aggiungi informazioni di debug
+                $current_time = time();
+                $template->assign_var('DEBUG_INFO', "Tempo corrente: {$current_time}");
+                
+                while ($row = $db->sql_fetchrow($result)) {
+                    // DEBUG - Valori per ogni timeout
+                    $debug_info = "Timeout ID: {$row['timeout_id']}, ";
+                    $debug_info .= "End time: {$row['timeout_end']}, ";
+                    $debug_info .= "Current time: {$current_time}, ";
+                    $debug_info .= "Is end > current? " . ($row['timeout_end'] > $current_time ? "Sì" : "No") . ", ";
+                    $debug_info .= "Status: {$row['timeout_status']}, ";
+                    $debug_info .= "Condition result: " . (($row['timeout_end'] > $current_time && $row['timeout_status'] == 1) ? "ACTIVE" : "EXPIRED");
+                    
+                    $template->assign_block_vars('timeouts', [
+                        'TIMEOUT_ID' => $row['timeout_id'],
+                        'USER_ID' => $row['user_id'],
+                        'USERNAME' => get_username_string('full', $row['user_id'], $row['username'], $row['user_colour']),
+                        'MOD_USERNAME' => get_username_string('full', $row['mod_user_id'], $row['mod_username'], $row['mod_user_colour']),
+                        'REASON' => $row['timeout_reason'],
+                        'START_TIME' => $user->format_date($row['timeout_start']),
+                        'END_TIME' => $user->format_date($row['timeout_end']),
+                        'DURATION' => ($row['timeout_end'] - $row['timeout_start']) / 60, // in minuti
+                        'STATUS' => ($row['timeout_end'] > time() && $row['timeout_status'] == 1) ? $user->lang('TIMEOUT_ACTIVE') : $user->lang('TIMEOUT_EXPIRED'),
+                        'IS_ACTIVE' => ($row['timeout_end'] > time() && $row['timeout_status'] == 1),
+                        'U_REMOVE' => ($row['timeout_end'] > time() && $row['timeout_status'] == 1) ? $this->u_action . '&amp;action=remove&amp;timeout_id=' . $row['timeout_id'] . '&amp;hash=' . $this->generate_timeout_hash('timeout_remove_' . $row['timeout_id']) : '',
+                        'U_DELETE' => $this->u_action . '&amp;action=delete&amp;timeout_id=' . $row['timeout_id'] . '&amp;hash=' . $this->generate_timeout_hash('timeout_delete_' . $row['timeout_id']),
+                        'DEBUG' => $debug_info,
+                    ]);
+                }
+                $db->sql_freeresult($result);
+                
+                // Calcolo della pagina corrente per la visualizzazione
+                $page_number = floor($start / $limit) + 1;
+                
+                $template->assign_vars([
+                    'U_ACTION' => $this->u_action,
+                    'PAGINATION' => $this->generate_simple_pagination($this->u_action, $total_count, $limit, $start),
+                    'PAGE_NUMBER' => $page_number . ' / ' . ceil($total_count / $limit),
+                    'TOTAL_TIMEOUTS' => $total_count,
+                ]);
+                
+                break;
+        }
+    }
+}

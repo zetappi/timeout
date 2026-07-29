@@ -1,0 +1,23 @@
+{% if postrow.S_USER_IN_TIMEOUT %}
+<script type="text/javascript">
+(function() {
+    // Trova l'elemento post genitore più vicino
+    var currentElement = document.currentScript;
+    var postElement = currentElement.parentNode;
+    while (postElement && !postElement.classList.contains('post')) {
+        postElement = postElement.parentNode;
+    }
+    
+    // Se troviamo l'elemento post, applichiamo direttamente gli stili
+    if (postElement) {
+        postElement.style.borderLeft = '8px solid #BC2A4D';
+        postElement.style.borderTop = '2px solid #BC2A4D';
+        postElement.style.borderRight = '2px solid #BC2A4D';
+        postElement.style.borderBottom = '2px solid #BC2A4D';
+        postElement.style.backgroundColor = '#FFF0F0';
+        postElement.style.boxShadow = '0 0 12px rgba(188, 42, 77, 0.5)';
+        postElement.dataset.timeout = '1'; // Aggiungi attributo data-timeout="1"
+    }
+})();
+</script>
+{% endif %}

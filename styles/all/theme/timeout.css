@@ -1,0 +1,141 @@
+/**
+ * Timeout Extension for phpBB 3.3.x
+ * @copyright (c) marcozp
+ */
+
+/* Stili per indicatori di timeout nei post */
+.post.is-timeout {
+    border-left: 8px solid #BC2A4D !important;
+    border-top: 2px solid #BC2A4D !important;
+    border-right: 2px solid #BC2A4D !important;
+    border-bottom: 2px solid #BC2A4D !important;
+    background-color: #FFF0F0 !important;
+    box-shadow: 0 0 12px rgba(188, 42, 77, 0.5) !important;
+    position: relative;
+    overflow: visible !important;
+}
+
+.post.is-timeout .post-author::after {
+    content: "\f017"; /* Font Awesome clock icon */
+    font-family: "FontAwesome";
+    display: inline-block;
+    margin-left: 5px;
+    color: #BC2A4D;
+}
+
+/* Contenitore per il badge di timeout */
+.timeout-badge-container {
+    display: block;
+    margin: 5px 0;
+    text-align: center;
+}
+
+/* Badge che indica utente in timeout */
+.timeout-badge {
+    display: inline-block;
+    background-color: #BC2A4D;
+    color: white;
+    font-size: 16px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    vertical-align: middle;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    animation: pulse-timeout 2s infinite;
+    border: 2px solid #fff;
+    width: 90%;
+    max-width: 200px;
+}
+
+@keyframes pulse-timeout {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* Contenitore per l'indicatore di timeout */
+.timeout-indicator {
+    display: inline-block;
+    margin: 5px 0;
+}
+
+/* Banner superiore per utenti in timeout */
+.timeout-banner {
+    background-color: #BC2A4D;
+    color: white;
+    padding: 10px;
+    margin: -10px -10px 10px -10px;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    animation: flash-timeout 1s infinite alternate;
+}
+
+@keyframes flash-timeout {
+    from { background-color: #BC2A4D; }
+    to { background-color: #D13D60; }
+}
+
+/* Badge nel footer del post */
+.timeout-footer {
+    margin-top: 10px;
+    text-align: right;
+}
+
+.timeout-badge-footer {
+    display: inline-block;
+    background-color: #BC2A4D;
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 3px;
+}
+
+/* Stili per la scheda di profilo utente in timeout */
+.profile-timeout-info {
+    background-color: #FFF0F0;
+    border: 1px solid #BC2A4D;
+    padding: 8px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+/* Messaggio di avviso per utenti in timeout */
+.timeout-warning {
+    background-color: #BC2A4D;
+    color: white;
+    padding: 15px;
+    margin: -15px -15px 15px -15px;
+    border-radius: 0;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #fff;
+    animation: flash-timeout 1.5s infinite alternate;
+    width: calc(100% + 30px);
+}
+
+.timeout-warning-icon {
+    flex: 0 0 auto;
+    margin-right: 15px;
+}
+
+.timeout-warning-text {
+    flex: 1 1 auto;
+    text-align: left;
+}
+
+.timeout-warning-text strong {
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.timeout-warning-subtext {
+    font-size: 14px;
+    opacity: 0.9;
+}

@@ -1,0 +1,15 @@
+# Route for timeout form
+timeout_main:
+    path: /timeout
+    defaults: { _controller: 'marcozp.timeout.controller.main:main' }
+    methods: [GET, POST]
+
+# Route for timeout user action
+timeout_user:
+    path: /timeout/user/{user_id}/{post_id}/{topic_id}
+    defaults: { _controller: 'marcozp.timeout.controller.main:timeout_user' }
+    requirements:
+        user_id: \d+
+        post_id: \d+
+        topic_id: \d+
+    methods: [GET]

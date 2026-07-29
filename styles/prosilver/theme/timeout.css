@@ -1,0 +1,70 @@
+/**
+ * Timeout Extension for phpBB 3.3.x
+ * @copyright (c) marcozp
+ */
+
+/* Stili per indicatori di timeout nei post */
+.post.is-timeout .post-author::after {
+    content: "\f017"; /* Font Awesome clock icon */
+    font-family: "FontAwesome";
+    display: inline-block;
+    margin-left: 5px;
+    color: #BC2A4D;
+}
+
+/* Stili per la scheda di profilo utente in timeout */
+.profile-timeout-info {
+    background-color: #FFF0F0;
+    border: 1px solid #BC2A4D;
+    padding: 8px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.timeout-indicator {
+    color: #BC2A4D;
+    font-weight: bold;
+}
+
+/* Stili per il modulo di timeout nel MCP */
+#mcp_timeout .timeout-form {
+    margin: 15px 0;
+}
+
+#mcp_timeout .timeout-actions {
+    margin-top: 10px;
+}
+
+/* Badge che indica utente in timeout */
+.timeout-badge {
+    display: block; /* Modificato da inline-block */
+    background-color: #BC2A4D;
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-top: 4px; /* Aggiunto per spaziatura */
+    margin-left: 0; /* Modificato per allineamento a sinistra sotto il nome utente */
+    /* vertical-align: middle; Rimosso perché non applicabile a display:block */
+}
+
+/* Messaggio di avviso per utenti in timeout */
+.timeout-warning {
+    background-color: #FFD2D2;
+    color: #D31141;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #D31141;
+}
+
+/* Stile per il pulsante di timeout nei post */
+.timeout-button i {
+    color: #BC2A4D;
+}
+
+/* Tabella di storico timeout */
+.timeout-history-table td.timeout-active {
+    font-weight: bold;
+    color: #BC2A4D;
+}

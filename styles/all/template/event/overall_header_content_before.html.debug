@@ -1,0 +1,13 @@
+<!-- IF S_USER_IN_TIMEOUT -->
+<div class="rules">
+    <div class="inner">
+        <strong>DEBUG INFO:</strong><br>
+        TIMEOUT_END_DATE: {TIMEOUT_END_DATE}<br>
+        TIMEOUT_CURRENT_INFO: {TIMEOUT_CURRENT_INFO}<br>
+        <hr>
+        <strong>{L_WARNING}:</strong> {L_TIMEOUT_USER_RESTRICTED}
+        <br>
+        <strong>Sei in timeout fino al {TIMEOUT_END_DATE}.</strong>
+    </div>
+</div>
+<!-- ENDIF -->

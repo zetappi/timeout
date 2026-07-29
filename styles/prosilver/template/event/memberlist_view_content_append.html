@@ -1,0 +1,28 @@
+<!-- IF S_SHOW_TIMEOUT_INFO -->
+<div class="panel">
+    <div class="inner">
+        <h3>{L_TIMEOUT_TITLE}</h3>
+        
+        <dl>
+            <dt>{L_TIMEOUT_COUNT}:</dt>
+            <dd>{TIMEOUT_COUNT}</dd>
+        </dl>
+        
+        <!-- IF IS_IN_TIMEOUT -->
+        <div class="notice">
+            <p>{L_TIMEOUT_USER_IS_IN_TIMEOUT}</p>
+            <dl>
+                <dt>{L_TIMEOUT_END}:</dt>
+                <dd>{TIMEOUT_END}</dd>
+                <dt>{L_TIMEOUT_REASON}:</dt>
+                <dd>{TIMEOUT_REASON}</dd>
+            </dl>
+        </div>
+        <!-- ENDIF -->
+        
+        <!-- IF S_CAN_TIMEOUT and S_AUTH_TIMEOUT -->
+        <p><a href="{U_TIMEOUT}" class="button2">{L_TIMEOUT_USER}</a></p>
+        <!-- ENDIF -->
+    </div>
+</div>
+<!-- ENDIF -->

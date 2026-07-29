@@ -1,0 +1,57 @@
+{% INCLUDE 'mcp_header.html' %}
+
+<h2>{{ lang('MCP_TIMEOUT_HISTORY') }}</h2>
+
+<div class="panel">
+	<div class="inner">
+
+	{% if S_TIMEOUTS %}
+		<table class="table1">
+			<thead>
+				<tr>
+					<th>{{ lang('USERNAME') }}</th>
+					<th>{{ lang('TIMEOUT_START') }}</th>
+					<th>{{ lang('TIMEOUT_END') }}</th>
+					<th>{{ lang('TIMEOUT_REASON') }}</th>
+					<th>{{ lang('TIMEOUT_STATUS') }}</th>
+					<th>{{ lang('TIMEOUT_MOD') }}</th>
+					<th>{{ lang('TIMEOUT_POST_REFERENCE') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for timeout in loops.timeouts %}
+				<tr>
+					<td>{{ timeout.USERNAME }}</td>
+					<td>{{ timeout.START_DATE }}</td>
+					<td>{{ timeout.END_DATE }}</td>
+					<td>{{ timeout.REASON }}</td>
+					<td>
+						{% if timeout.IS_ACTIVE %}
+						<span class="badge bg-success">{{ lang('TIMEOUT_STATUS_ACTIVE') }}</span>
+						{% else %}
+						<span class="badge bg-secondary">{{ lang('TIMEOUT_STATUS_INACTIVE') }}</span>
+						{% endif %}
+					</td>
+					<td>{{ timeout.MOD_USERNAME }}</td>
+					<td>
+						{% if timeout.POST_ID %}
+						<a href="{{ timeout.U_VIEW_POST }}">{{ lang('TIMEOUT_VIEW_POST') }}</a>
+						{% else %}
+						-
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="pagination">
+			{{ PAGINATION }}
+		</div>
+	{% else %}
+		<p>{{ lang('NO_TIMEOUT_HISTORY') }}</p>
+	{% endif %}
+
+	</div>
+</div>
+
+{% INCLUDE 'mcp_footer.html' %}

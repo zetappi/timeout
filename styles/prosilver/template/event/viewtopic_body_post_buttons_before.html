@@ -1,0 +1,14 @@
+<!-- Pulsante timeout - mostra solo se l'utente ha i permessi e non è anonimo, se stesso o admin -->
+<!-- IF S_AUTH_TIMEOUT and postrow.POSTER_ID != ANONYMOUS and postrow.POSTER_ID != S_USER_ID and not postrow.S_POSTER_ADMIN -->
+<li>
+    <!-- IF not postrow.S_USER_IN_TIMEOUT -->
+    <a href="{ROOT_PATH}mcp.php?i=-marcozp-timeout-mcp-main_module&mode=main&user_id={postrow.POSTER_ID}&post_id={postrow.POST_ID}&topic_id={TOPIC_ID}" title="{L_TIMEOUT_USER}" class="button button-icon-only">
+        <i class="icon fa-clock-o fa-fw" aria-hidden="true"></i><span class="sr-only">{L_TIMEOUT_USER}</span>
+    </a>
+    <!-- ELSE -->
+    <span class="button button-icon-only disabled" title="{L_TIMEOUT_USER_IS_IN_TIMEOUT}">
+        <i class="icon fa-ban fa-fw" aria-hidden="true"></i><span class="sr-only">{L_TIMEOUT_USER_IS_IN_TIMEOUT}</span>
+    </span>
+    <!-- ENDIF -->
+</li>
+<!-- ENDIF -->

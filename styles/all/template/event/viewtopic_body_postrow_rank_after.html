@@ -1,0 +1,10 @@
+{% if postrow.S_USER_IN_TIMEOUT %}
+    <div style="display: block; margin: 5px 0;">
+        <span style="display: inline-block; background-color: #da0d3d; color: rgb(233, 233, 233); font-size: 13px; padding: 2px 8px; border-radius: 3px; font-weight: bold;" title="{{ lang('TIMEOUT_USER_IS_IN_TIMEOUT') }}">
+            <i class="icon fa-ban fa-fw" aria-hidden="true"></i>{{ lang('TIMEOUT_BADGE_TEXT') }}
+        
+        <div style="font-size: 11px; color: #ffd448; margin-top: 2px;">{{ lang('TIMEOUT_REMAINING') }}:</div>
+        <div style="font-size: 11px; color: #ffd900;">{{ postrow.TIMEOUT_REMAINING }}</div>
+        </span>
+    </div>
+{% endif %}

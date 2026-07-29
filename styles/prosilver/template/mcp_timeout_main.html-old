@@ -1,0 +1,161 @@
+{% include 'mcp_header.html' %}
+
+<h2>{{ lang('MCP_TIMEOUT_TITLE') }}</h2>
+
+<form id="mcp_timeout" method="post" action="{{ U_ACTION }}">
+    <div class="panel">
+        <div class="inner">-----
+
+        {% if S_ERROR %}
+            <div class="error">
+                <p>{{ ERROR_MSG }}</p>
+            </div>
+        {% endif %}
+
+        <fieldset>
+            <dl>
+                <dt><label for="username">{{ lang('TIMEOUT_USER') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_USER_EXPLAIN') }}</span></dt>
+                <dd><input class="inputbox" type="text" name="username" id="username" size="20" value="{{ USERNAME }}" {% if S_TIMEOUT_USERNAME_READONLY %}readonly="readonly"{% endif %} /></dd>
+            </dl>
+            <dl>
+                <dt><label>{{ lang('TIMEOUT_DURATION') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_DURATION_EXPLAIN') }}</span></dt>
+                <dd>
+                    <label><input type="radio" class="radio" name="timeout_duration" value="15" {% if DURATION == 15 %}checked="checked"{% endif %}/> 15 {{ lang('MINUTES') }}</label><br />
+                    <label><input type="radio" class="radio" name="timeout_duration" value="30" {% if DURATION == 30 %}checked="checked"{% endif %}/> 30 {{ lang('MINUTES') }}</label><br />
+                    <label><input type="radio" class="radio" name="timeout_duration" value="60" {% if DURATION == 60 or not DURATION %}checked="checked"{% endif %}/> 60 {{ lang('MINUTES') }}</label><br />
+                    <label><input type="radio" class="radio" name="timeout_duration" value="120" {% if DURATION == 120 %}checked="checked"{% endif %}/> 120 {{ lang('MINUTES') }}</label><br />
+                    <label><input type="radio" class="radio" name="timeout_duration" value="180" {% if DURATION == 180 %}checked="checked"{% endif %}/> 180 {{ lang('MINUTES') }}</label><br />
+                    <label><input type="radio" class="radio" name="timeout_duration" value="{{ MAX_DURATION }}" {% if DURATION == MAX_DURATION %}checked="checked"{% endif %}/> {{ MAX_DURATION }} {{ lang('MINUTES') }} ({{ lang('TIMEOUT_MAX_ALLOWED') }})</label>
+                </dd>
+            </dl>
+            {% if S_SHOW_TIMEOUT_INFO %}
+            <dl>
+                <dt><label for="duration">{{ lang('TIMEOUT_DURATION') }}:</label></dt>
+                <dd>
+                    <select name="duration" id="duration">
+                        {% for duration_option in DURATION_OPTIONS %}
+                            <option value="{{ duration_option.VALUE }}"{{ duration_option.SELECTED }}>{{ duration_option.NAME }}</option>
+                        {% endfor %}
+                    </select>
+                </dd>
+            </dl>
+            
+            <dl>
+                <dt>{{ lang('TIMEOUT_HISTORY') }}:</dt>
+                <dd>{{ TIMEOUT_COUNT }}</dd>
+            </dl>
+            
+            <dl>
+                <dt>{{ lang('BAN_HISTORY') }}:</dt>
+                <dd>{{ BAN_COUNT }}</dd>
+            </dl>
+            
+            <dl>
+                <dt>{{ lang('WARNING_HISTORY') }}:</dt>
+                <dd>{{ WARNING_COUNT }}</dd>
+            </dl>
+            
+            {% if S_USER_IS_IN_TIMEOUT %}
+            <dl>
+                <dt>{{ lang('CURRENT_TIMEOUT') }}:</dt>
+                <dd>{{ TIMEOUT_END_DATE }}</dd>
+            </dl>
+            {% endif %}
+            {% endif %}
+            <dl>
+                <dt><label for="timeout_reason">{{ lang('TIMEOUT_REASON') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_REASON_EXPLAIN') }} ({{ lang('OPTIONAL') }})</span></dt>
+                <dd><textarea class="inputbox" name="timeout_reason" id="timeout_reason" rows="3" cols="30">{{ REASON }}</textarea></dd>
+            </dl>
+            <dl>
+                <dt><label for="notify_user">{{ lang('TIMEOUT_NOTIFY_USER') }}{{ lang('COLON') }}</label><br /><span>{{ lang('TIMEOUT_NOTIFY_USER_EXPLAIN') }}</span></dt>
+                <dd><label><input type="checkbox" class="radio" name="notify_user" id="notify_user" value="1" {% if NOTIFY_USER %}checked="checked"{% endif %} /> {{ lang('YES') }}</label></dd>
+            </dl>
+        </fieldset>
+
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="inner">
+            <h3>{{ lang('USER_HISTORY') }}</h3>
+            <dl class="details">
+                <dt><strong>{{ lang('BAN_HISTORY') }}:</strong></dt>
+                <dd>{{ BAN_COUNT }}</dd>
+            </dl>
+            <dl class="details">
+                <dt><strong>{{ lang('WARNING_HISTORY') }}:</strong></dt>
+                <dd>{{ WARNING_COUNT }}</dd>
+            </dl>
+            <dl class="details">
+                <dt><strong>{{ lang('TIMEOUT_TOTAL') }}:</strong></dt>
+                <dd>{{ TIMEOUT_COUNT }}</dd>
+            </dl>
+            <dl class="details">
+                <dt><strong>{{ lang('RISK_INDEX') }}:</strong><br><span>{{ lang('RISK_INDEX_EXPLAIN') }}</span></dt>
+                <dd>
+                    <span style="display: inline-block; width: 50px;">{{ RISK_INDEX }}%</span>
+                    <div class="risk-meter">
+                        <div class="risk-level" style="width: {{ RISK_INDEX }}%; background-color: {{ RISK_COLOR }};"></div>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <style>
+    .risk-meter {
+        width: 150px;
+        height: 12px;
+        background: #f0f0f0;
+        border-radius: 6px;
+        margin-top: 3px;
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 10px;
+    }
+    .risk-level {
+        height: 100%;
+        transition: width 0.3s ease;
+    }
+    </style>
+
+    {% if S_SHOW_HISTORY %}
+    <fieldset>
+        <legend>{{ lang('USER_HISTORY') }}</legend>
+        <dl>
+            <dt><strong>{{ lang('BAN_HISTORY') }}:</strong></dt>
+            <dd>{{ BAN_COUNT }}</dd>
+        </dl>
+        <dl>
+            <dt><strong>{{ lang('WARNING_HISTORY') }}:</strong></dt>
+            <dd>{{ WARNING_COUNT }}</dd>
+        </dl>
+    </fieldset>
+    {% endif %}
+
+    {% if TIMEOUT_USER_HISTORY_VISIBLE %}
+    <div class="panel">
+        <div class="inner">
+            <h3>{{ lang('USER_HISTORY') }}</h3>
+            <dl class="details">
+                <dt>{{ lang('BAN_HISTORY') }}:</dt>
+                <dd>{{ TIMEOUT_USER_BAN_COUNT }}</dd>
+                <dt>{{ lang('WARNING_HISTORY') }}:</dt>
+                <dd>{{ TIMEOUT_USER_WARNING_COUNT }}</dd>
+            </dl>
+        </div>
+    </div>
+    {% endif %}
+
+    <fieldset class="submit-buttons">
+        <input type="hidden" name="post_id" value="{{ POST_ID }}" />
+        <input type="hidden" name="user_id" value="{{ USER_ID }}" />
+        <input type="hidden" name="topic_id" value="{{ TOPIC_ID }}" />
+        {{ S_HIDDEN_FIELDS }}
+        <input type="submit" name="submit_timeout" value="{{ lang('TIMEOUT_SUBMIT') }}" class="button1" />
+        {{ S_FORM_TOKEN }}
+    </fieldset>
+</form>
+
+{% include 'mcp_footer.html' %}

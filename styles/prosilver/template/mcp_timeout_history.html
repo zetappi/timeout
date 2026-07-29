@@ -1,0 +1,67 @@
+{% INCLUDE 'mcp_header.html' %}
+
+<h2>{{ lang('MCP_TIMEOUT_HISTORY') }}</h2>
+
+<div class="panel">
+	<div class="inner">
+
+	{% if loops.timeouts|length %}
+		<table class="table1">
+			<thead>
+				<tr>
+					<th>{{ lang('USERNAME') }}</th>
+					<th>{{ lang('TIMEOUT_START') }}</th>
+					<th>{{ lang('TIMEOUT_END') }}</th>
+					<th>{{ lang('TIMEOUT_DURATION') }}</th>
+					<th>{{ lang('TIMEOUT_STATUS') }}</th>
+					<th>{{ lang('TIMEOUT_REASON') }}</th>
+					<th>{{ lang('TIMEOUT_MODERATOR') }}</th>
+					<th>{{ lang('TIMEOUT_POST') }}</th>
+					<th>{{ lang('TIMEOUT_ACTIONS') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for timeout in loops.timeouts %}
+				<tr>
+					<td>{{ timeout.USERNAME }}</td>
+					<td>{{ timeout.START_TIME }}</td>
+					<td>{{ timeout.END_TIME }}</td>
+					<td>{{ timeout.DURATION }} {{ lang('MINUTES') }}</td>
+					<td>{{ timeout.STATUS }}</td>
+					<td>{{ timeout.REASON }}</td>
+					<td>{{ timeout.MOD_USERNAME }}</td>
+					<td>
+						{% if timeout.POST_ID %}
+							<a href="{{ phpbb_root_path }}viewtopic.php?p={{ timeout.POST_ID }}#p{{ timeout.POST_ID }}" class="postlink">
+								Post #{{ timeout.POST_ID }}
+							</a>
+						{% else %}
+							- 
+						{% endif %}
+					</td>
+					<td>
+						{% if timeout.U_REMOVE %}
+						<a href="{{ timeout.U_REMOVE }}" data-ajax="true" data-refresh="true">{{ lang('TIMEOUT_END_NOW') }}</a>
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		
+		<div class="pagination">
+			<div class="pagination">
+				<ul>
+					<li class="page-current"><strong>{{ PAGE_NUMBER }}</strong></li>
+					{% if PAGINATION %}<li>{{ PAGINATION }}</li>{% endif %}
+				</ul>
+			</div>
+		</div>
+	{% else %}
+		<p>{{ lang('NO_TIMEOUT_RECORDS') }}</p>
+	{% endif %}
+
+	</div>
+</div>
+
+{% INCLUDE 'mcp_footer.html' %}

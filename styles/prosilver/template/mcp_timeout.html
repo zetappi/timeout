@@ -1,0 +1,151 @@
+<!-- INCLUDE mcp_header.html -->
+
+<form id="mcp_timeout" method="post" action="{U_POST_ACTION}">
+
+<h2>{L_MCP_TIMEOUT_TITLE}</h2>
+
+<div class="panel">
+	<div class="inner">
+
+	<!-- IF S_MCP_TIMEOUT_USER -->
+		<h3>{L_TIMEOUT_USER}</h3>
+		<p>{L_MCP_TIMEOUT_USER_EXPLAIN}</p>
+
+		<fieldset>
+			<dl>
+				<dt><label for="timeout_username">{L_USERNAME}:</label></dt>
+				<dd>
+					<!-- IF U_FIND_USERNAME --><span><a href="{U_FIND_USERNAME}" onclick="find_username(this.href); return false;">{L_FIND_USERNAME}</a></span><!-- ENDIF -->
+					<input class="inputbox autowidth" type="text" name="username" id="timeout_username" value="{TIMEOUT_USERNAME}" />
+				</dd>
+			</dl>
+			<dl>
+				<dt><label for="timeout_duration">{L_TIMEOUT_DURATION}:</label></dt>
+				<dd>
+					<input class="inputbox autowidth" type="number" min="1" max="{MAX_TIMEOUT_DURATION}" name="timeout_duration" id="timeout_duration" value="60" /> 
+					<select name="timeout_duration_unit">
+						<option value="60">{L_TIMEOUT_TIME_UNITS.MINUTE.1}</option>
+						<option value="3600">{L_TIMEOUT_TIME_UNITS.HOUR.1}</option>
+						<option value="86400">{L_TIMEOUT_TIME_UNITS.DAY.1}</option>
+						<option value="604800">{L_TIMEOUT_TIME_UNITS.WEEK.1}</option>
+					</select>
+				</dd>
+			</dl>
+			<dl>
+				<dt><label for="timeout_reason">{L_TIMEOUT_REASON}:</label></dt>
+				<dd><textarea name="timeout_reason" id="timeout_reason" class="inputbox" rows="3" cols="40">{TIMEOUT_REASON}</textarea></dd>
+			</dl>
+			<!-- IF S_CAN_NOTIFY -->
+			<dl>
+				<dt><label for="timeout_notify">{L_TIMEOUT_NOTIFY_USER}:</label></dt>
+				<dd><input type="checkbox" name="timeout_notify" id="timeout_notify" checked="checked" /></dd>
+			</dl>
+			<!-- ENDIF -->
+		</fieldset>
+
+		<fieldset class="submit-buttons">
+			<input type="reset" value="{L_RESET}" name="reset" class="button2" />&nbsp; 
+			<input type="submit" name="submit" value="{L_SUBMIT}" class="button1" />
+			{S_FORM_TOKEN}
+		</fieldset>
+	<!-- ENDIF -->
+
+	<!-- IF S_MCP_TIMEOUT_ACTIVE -->
+		<h3>{L_TIMEOUT_ACTIVE}</h3>
+		
+		<!-- IF .timeout_active -->
+			<table class="table1">
+			<thead>
+				<tr>
+					<th>{L_USERNAME}</th>
+					<th>{L_TIMEOUT_START}</th>
+					<th>{L_TIMEOUT_END}</th>
+					<th>{L_TIMEOUT_REASON}</th>
+					<th>{L_TIMEOUT_MOD}</th>
+					<th>{L_TIMEOUT_ACTIONS}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- BEGIN timeout_active -->
+				<tr class="{timeout_active.ROW_CLASS}">
+					<td>{timeout_active.USERNAME}</td>
+					<td>{timeout_active.START_DATE}</td>
+					<td>{timeout_active.END_DATE}</td>
+					<td>{timeout_active.REASON}</td>
+					<td>{timeout_active.MOD_USERNAME}</td>
+					<td>
+						<a href="{timeout_active.U_END_TIMEOUT}" data-ajax="true" data-refresh="true">{L_TIMEOUT_END_NOW}</a>
+					</td>
+				</tr>
+				<!-- END timeout_active -->
+			</tbody>
+			</table>
+		<!-- ELSE -->
+			<p>{L_TIMEOUT_NO_RECORDS}</p>
+		<!-- ENDIF -->
+	<!-- ENDIF -->
+
+	<!-- IF S_MCP_TIMEOUT_HISTORY -->
+		<h3>{L_TIMEOUT_HISTORY}</h3>
+		
+		<!-- IF .timeout_history -->
+			<table class="table1">
+			<thead>
+				<tr>
+					<th>{L_USERNAME}</th>
+					<th>{L_TIMEOUT_START}</th>
+					<th>{L_TIMEOUT_END}</th>
+					<th>{L_TIMEOUT_REASON}</th>
+					<th>{L_TIMEOUT_MOD}</th>
+					<th>{L_TIMEOUT_STATUS}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- BEGIN timeout_history -->
+				<tr class="{timeout_history.ROW_CLASS}">
+					<td>{timeout_history.USERNAME}</td>
+					<td>{timeout_history.START_DATE}</td>
+					<td>{timeout_history.END_DATE}</td>
+					<td>{timeout_history.REASON}</td>
+					<td>{timeout_history.MOD_USERNAME}</td>
+					<td>{timeout_history.STATUS}</td>
+				</tr>
+				<!-- END timeout_history -->
+			</tbody>
+			</table>
+			
+			<!-- IF PAGINATION -->
+			<div class="pagination">
+				{TOTAL_TIMEOUTS}
+				<!-- IF .pagination --> 
+					<!-- INCLUDE pagination.html -->
+				<!-- ELSE --> 
+					&bull; {PAGE_NUMBER}
+				<!-- ENDIF -->
+			</div>
+			<!-- ENDIF -->
+		<!-- ELSE -->
+			<p>{L_TIMEOUT_NO_RECORDS}</p>
+		<!-- ENDIF -->
+	<!-- ENDIF -->
+
+	<!-- IF SHOW_HISTORY -->
+	<fieldset class="fields1">
+		<legend>{L_USER_HISTORY}</legend>
+		<dl>
+			<dt><strong>{L_BAN_HISTORY}:</strong></dt>
+			<dd>{BAN_COUNT}</dd>
+		</dl>
+		<dl>
+			<dt><strong>{L_WARNING_HISTORY}:</strong></dt>
+			<dd>{WARNING_COUNT}</dd>
+		</dl>
+	</fieldset>
+	<!-- ENDIF -->
+
+	</div>
+</div>
+
+</form>
+
+<!-- INCLUDE mcp_footer.html -->

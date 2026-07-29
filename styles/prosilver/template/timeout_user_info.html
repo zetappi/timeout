@@ -1,0 +1,82 @@
+<!-- INCLUDE overall_header.html -->
+
+<h2 class="titlespace">{L_TIMEOUT_USER_INFO_TITLE}</h2>
+
+<div class="panel">
+    <div class="inner">
+        <h3>{USERNAME}</h3>
+        
+        <!-- IF S_IS_IN_TIMEOUT -->
+        <div class="notice">
+            <p>{L_TIMEOUT_USER_IS_IN_TIMEOUT}</p>
+            <dl>
+                <dt>{L_TIMEOUT_START}:</dt>
+                <dd>{TIMEOUT_START}</dd>
+                <dt>{L_TIMEOUT_END}:</dt>
+                <dd>{TIMEOUT_END}</dd>
+                <dt>{L_TIMEOUT_REMAINING}:</dt>
+                <dd>{TIMEOUT_REMAINING}</dd>
+                <dt>{L_TIMEOUT_REASON}:</dt>
+                <dd>{TIMEOUT_REASON}</dd>
+            </dl>
+        </div>
+        <!-- ENDIF -->
+        
+        <dl>
+            <dt>{L_TIMEOUT_COUNT}:</dt>
+            <dd>{TIMEOUT_COUNT}</dd>
+        </dl>
+        
+        <!-- IF S_CAN_TIMEOUT && !S_IS_IN_TIMEOUT && !S_IS_SELF -->
+        <p><a href="{U_TIMEOUT}" class="button2">{L_TIMEOUT_USER}</a></p>
+        <!-- ENDIF -->
+        
+        <h3>{L_TIMEOUT_HISTORY}</h3>
+        
+        <!-- IF .timeout_history -->
+        <table class="table1 zebra-table">
+            <thead>
+                <tr>
+                    <th>{L_TIMEOUT_START}</th>
+                    <th>{L_TIMEOUT_END}</th>
+                    <th>{L_TIMEOUT_REASON}</th>
+                    <th>{L_TIMEOUT_MOD}</th>
+                    <th>{L_TIMEOUT_STATUS}</th>
+                    <!-- IF .timeout_history.POST_URL --><th>{L_TIMEOUT_POST_REFERENCE}</th><!-- ENDIF -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- BEGIN timeout_history -->
+                <tr class="{timeout_history.ROW_CLASS}">
+                    <td>{timeout_history.START_DATE}</td>
+                    <td>{timeout_history.END_DATE}</td>
+                    <td>{timeout_history.REASON}</td>
+                    <td>{timeout_history.MOD_USERNAME}</td>
+                    <td><!-- IF timeout_history.IS_ACTIVE --><strong class="error">{timeout_history.STATUS}</strong><!-- ELSE -->{timeout_history.STATUS}<!-- ENDIF --></td>
+                    <!-- IF timeout_history.POST_URL --><td><a href="{timeout_history.POST_URL}">{L_TIMEOUT_VIEW_POST}</a></td><!-- ENDIF -->
+                </tr>
+                <!-- END timeout_history -->
+            </tbody>
+        </table>
+        <!-- ELSE -->
+        <p>{L_TIMEOUT_NO_HISTORY}</p>
+        <!-- ENDIF -->
+        
+        <!-- IF BAN_COUNT or WARNING_COUNT -->
+        <div class="panel">
+            <div class="inner">
+                <h3>{L_USER_HISTORY}</h3>
+                <dl class="details">
+                    <!-- IF BAN_COUNT --><dt>{L_BAN_HISTORY}:</dt><dd>{BAN_COUNT}</dd><!-- ENDIF -->
+                    <!-- IF WARNING_COUNT --><dt>{L_WARNING_HISTORY}:</dt><dd>{WARNING_COUNT}</dd><!-- ENDIF -->
+                </dl>
+            </div>
+        </div>
+        <!-- ENDIF -->
+        
+        <!-- DEBUG TEMPLATE VARS: BAN_COUNT={BAN_COUNT}, WARNING_COUNT={WARNING_COUNT} -->
+        
+    </div>
+</div>
+
+<!-- INCLUDE overall_footer.html -->

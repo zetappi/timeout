@@ -1,0 +1,41 @@
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.editorconfig
+
+# PHP/Composer
+/vendor/
+composer.lock
+.php_cs.cache
+
+# phpBB cache e log
+cache/
+logs/
+tmp/
+
+# Deployment/runtime
+.env
+.env.local
+config.php
+
+# Node (se usato)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build artifacts
+dist/
+build/
+
+# Temporary test files
+*.tmp
+*.bak
