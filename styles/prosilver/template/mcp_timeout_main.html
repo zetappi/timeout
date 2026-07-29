@@ -2,6 +2,24 @@
 
 <script src="{ROOT_PATH}ext/marcozp/timeout/styles/prosilver/template/js/timeout_slider.js"></script>
 
+<style>
+.risk-meter {
+	width: 150px;
+	height: 12px;
+	background: #f0f0f0;
+	border-radius: 6px;
+	margin-top: 3px;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 10px;
+}
+.risk-level {
+	height: 100%;
+	transition: width 0.3s ease;
+}
+</style>
+
 <h2>{L_MCP_TIMEOUT_MAIN}</h2>
 
 <form id="mcp_timeout" method="post" action="{U_ACTION}">
@@ -29,6 +47,19 @@
 			<dl>
 				<dt><strong>{L_WARNING_HISTORY}:</strong></dt>
 				<dd>{WARNING_COUNT}</dd>
+			</dl>
+			<dl>
+				<dt><strong>{L_TIMEOUT_COUNT}:</strong></dt>
+				<dd>{TIMEOUT_COUNT}</dd>
+			</dl>
+			<dl>
+				<dt><strong>{L_RISK_INDEX}:</strong><br /><span>{L_RISK_INDEX_EXPLAIN}</span></dt>
+				<dd>
+					<span style="display: inline-block; width: 50px;">{NEW_RISK_INDEX}%</span>
+					<div class="risk-meter">
+						<div class="risk-level" style="width: {NEW_RISK_INDEX}%; background-color: {RISK_COLOR};"></div>
+					</div>
+				</dd>
 			</dl>
 		</fieldset>
 		<!-- ENDIF -->

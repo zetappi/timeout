@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.5] - 2026-07-29
+
+### Fixed
+- Restored "Karma Factor" (recidivism risk) meter in MCP timeout form, lost when the
+  template was rewritten from Twig to phpBB classic syntax
+- The PHP side (`mcp/main_module.php`) always computed `NEW_RISK_INDEX` and `RISK_COLOR`
+  from ban/warning/timeout history, but the rewritten template only rendered
+  `BAN_COUNT`/`WARNING_COUNT`, dropping the visual risk meter and the total timeout count
+- Added back the risk meter bar (colored by severity) and `TIMEOUT_COUNT` display in the
+  User History panel, using the correct template variable name `NEW_RISK_INDEX`
+  (the old Twig template incorrectly referenced a non-existent `RISK_INDEX` template var)
+
 ## [0.0.4] - 2026-07-29
 
 ### Fixed
